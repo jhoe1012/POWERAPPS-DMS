@@ -1,0 +1,29 @@
+ScrnViewDocument As screen:
+
+    CmpntLoading_1 As CmpntLoading:
+        Height: =Parent.Height
+        Width: =Parent.Width
+
+    PdfViewer1 As pdfViewer:
+        BorderColor: =RGBA(0, 0, 0, 1)
+        Document: =gblDocumentLink.FileContent
+        Fill: =RGBA(0, 0, 0, 0)
+        Height: =Parent.Height- CmpntHeader_3.Height
+        Width: =Parent.Width
+        Y: =CmpntHeader_3.Y+CmpntHeader_3.Height
+        ZIndex: =2
+
+    CmpntHeader_3 As CmpntHeader:
+        BackNavigation: =If(lclIsRnd,ScrnListRnd, ScrnListControlledDoc)
+        HeaderText: =Mid(gblDocumentLink.FileName,16)
+        Width: =Parent.Width
+        ZIndex: =3
+
+    Rectangle2 As rectangle:
+        Fill: =RGBA(0, 0, 0, 0)
+        Height: =625
+        Width: =PdfViewer1.Width / 1.04
+        X: =PdfViewer1.X
+        Y: =112
+        ZIndex: =4
+

@@ -1,0 +1,198 @@
+"ScrnPrint As screen.'printableLayout_A4Landscape_ver1.0'":
+    Height: =816 //794
+    OnVisible: =
+    Width: =1056 //1123
+
+    HtmlText2_1 As htmlViewer:
+        Height: =Parent.Height
+        HtmlText: |-
+            =" 
+                  <table
+                    style='
+                      table-layout: fixed;
+                      width: 95%;
+                      height: 50px;
+                      border: solid 1px black;
+                      border-collapse: collapse;
+                      background-color: RGBA(255, 255, 255, 1);
+                      margin:20px 20px 0px 20px;
+                    '
+                  >
+                    <tr>
+                      <td
+                        style='border: solid 1px black; padding: 5px; font-weight: bold'
+                      ><img src='https://goldilocksbakeshopinc.sharepoint.com/sites/documentmanagementsystem2/Shared%20Documents/goldilocksLogo.jpg' alt='Goldilocks Logo' style='padding:auto auto;width:300px;heigth:150px' ></td>
+                      <td style='border: solid 1px black; padding: 5px; font-weight: bold;text-align:center;font-size:2rem'>
+                        REVISION HISTORY
+                      </td>
+                      <td style='border: solid 1px black; padding: 5px; font-weight: bold'>
+                        Document Type: <br />
+                        <p style='font-weight: normal; text-align: center'>
+                          " & gblPrintData.DocumentType & "
+                        </p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        style='border: solid 1px black; padding: 5px; font-weight: bold'
+                        colspan='2'
+                      >
+                        Document Title: <br />
+                        <p style='font-weight: normal; text-align: center'>
+                           " & gblPrintData.DocumentTitle & "
+                        </p>
+                      </td>
+                      <td style='border: solid 1px black; padding: 5px; font-weight: bold'>
+                        Document Owner: <br />
+                        <p style='font-weight: normal; text-align: center'>
+                           " & gblPrintData.DocumentOriginator & "
+                        </p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style='border: solid 1px black; padding: 5px; font-weight: bold'>
+                        Document Number: <br />
+                        <p style='font-weight: normal; text-align: center'>
+                           " & gblPrintData.DocumentControlNumber & "
+                        </p>
+                      </td>
+                      <td style='border: solid 1px black; padding: 5px; font-weight: bold'>
+                        Version Number: <br />
+                        <p style='font-weight: normal; text-align: center'> " & Text(
+                Value(gblPrintData.VersionNo),
+                "[$-en]00"
+            ) & "</p>
+                      </td>
+                      <td style='border: solid 1px black; padding: 5px; font-weight: bold'>
+                        Effectivity Date : <br />
+                        <p style='font-weight: normal; text-align: center'>
+                           " & Text(
+                gblPrintData.EffectivityDate,
+                "dd mmm yyyy"
+            ) & " 
+                        </p>
+                      </td>
+                    </tr>
+                  </table>
+                  <br />
+                <table
+                    style='
+                      table-layout: fixed;
+                      width: 95%;
+                      border: solid 1px black;
+                      border-collapse: collapse;
+                      background-color: RGBA(255, 255, 255, 1);
+                      text-align: center;
+                      font-size:15px;
+                      margin:0px 20px 0px;'
+                  >
+                    <tr>
+                      <td
+                        style='border: solid 1px black; padding: 5px; font-weight: bold'
+                        colspan='5'
+                      >
+                        REVISION HISTORY TABLE
+                      </td>
+                    </tr>
+                </table>
+                  <table
+                    style='
+                      table-layout: fixed;
+                      width: 95%;
+                      border: solid 1px black;
+                      border-collapse: collapse;
+                      background-color: RGBA(255, 255, 255, 1);
+                      text-align: center;
+                      font-size:15px;
+                      margin:0px 20px 0px;'
+                  >
+                   
+                      <tr>
+                        <td style='border: solid 1px black; padding: 5px; font-weight: bold; width: 10%; max-width: 10%;'>
+                            Revision Date
+                        </td>
+                        <td style='border: solid 1px black; padding: 5px; font-weight: bold; width: 10%; max-width: 10%;'>
+                            Effectivity Date
+                        </td>
+                        <td style='border: solid 1px black; padding: 5px; font-weight: bold; width: 10%; max-width: 10%;'>
+                            Version No.
+                        </td>
+                        <td style='border: solid 1px black; padding: 5px; font-weight: bold;width: 45%; max-width: 45%;'>
+                            Description / Reason for Revision
+                        </td>
+                        <td style='border: solid 1px black; padding: 5px; font-weight: bold; width: 25%; max-width: 25%;'>
+                            Approved By
+                        </td>
+                    </tr>
+            " & Concat(
+                colPrintData,
+                "<tr>
+                      <td style='border: solid 1px black; padding: 5px;'>
+                        " & Text(
+                    RevisionDate,
+                    "mm-dd-yyyy"
+                ) & "
+                      </td>
+                       <td style='border: solid 1px black; padding: 5px;'>
+                       " & Text(
+                    EffectivityDate,
+                    "mm-dd-yyyy"
+                ) & "
+                      </td>
+                      <td style='border: solid 1px black; padding: 5px;'>
+            " & Text(
+                    Value(VersionNo),
+                    "[$-en]00"
+                ) & "
+                      </td>
+                      <td style='border: solid 1px black; padding: 5px;text-align: left; '>
+                        " & Desc_ReasonofRevision & "
+                      </td>
+                      <td style='border: solid 1px black; padding: 5px;'>
+                        " & ApproverName & "
+                      </td>
+                    </tr>"
+            ) & "
+            
+                  </table>
+                  <br />
+            "
+        Width: =Parent.Width
+        ZIndex: =1
+
+    BtnBackToDoc As button:
+        BorderThickness: =1
+        FocusedBorderThickness: =1
+        Height: =18
+        OnSelect: =Navigate(ScrnListControlledDoc,ScreenTransition.Fade)
+        RadiusBottomLeft: =5
+        RadiusBottomRight: =5
+        RadiusTopLeft: =5
+        RadiusTopRight: =5
+        Size: =10
+        Text: ="Back"
+        Visible: =Not(Parent.Printing)
+        Width: =92
+        X: =803
+        Y: |
+            =5
+        ZIndex: =2
+
+    BtnPrintDocHistory As button:
+        BorderThickness: =1
+        FocusedBorderThickness: =1
+        Height: =18
+        OnSelect: =Print()
+        RadiusBottomLeft: =5
+        RadiusBottomRight: =5
+        RadiusTopLeft: =5
+        RadiusTopRight: =5
+        Size: =10
+        Text: ="Print"
+        Visible: =Not(Parent.Printing)
+        Width: =100
+        X: =910
+        Y: |
+            =5
+        ZIndex: =3
+

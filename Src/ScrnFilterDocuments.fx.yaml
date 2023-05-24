@@ -1,0 +1,66 @@
+ScrnFilterDocuments As screen:
+    LoadingSpinner: =
+    OnVisible: =
+
+    CmpntHeader_11 As CmpntHeader:
+        HeaderText: ="QA Document System "
+        ShowIcon: =false
+        Width: =Parent.Width
+        ZIndex: =2
+
+    "GalDocument As gallery.'BrowseLayout_Vertical_TwoTextOneImageVariant_ver4.0'":
+        Height: =238
+        Items: |-
+            =Table(
+                {
+                    Title: "Controlled Document",
+                    screen: ScrnFilterControlledDoc
+                },
+                {
+                    Title: "R&D Document",
+                    screen: ScrnFilterRnD
+                }
+            )
+        Layout: =Layout.Vertical
+        TemplatePadding: =0
+        TemplateSize: =Min(160, Self.Height - 60)
+        Width: =510
+        WrapCount: =2
+        X: =(Parent.Width * 0.5) - (Self.Width * 0.5 )
+        Y: =(Parent.Height * 0.5) - (Self.Height * 0.5 )
+        ZIndex: =5
+
+        IcnControlledFolder_2 As icon.Folder:
+            BorderColor: =RGBA(255, 255, 0, 1)
+            Color: =RGBA(255, 191, 0, 1)
+            Icon: =Icon.Folder
+            OnSelect: |-
+                =
+                Navigate(
+                    ThisItem.screen,
+                    ScreenTransition.Fade
+                )
+            X: =(Parent.TemplateWidth * 0.5) - (Self.Width * 0.5)
+            Y: =(Parent.TemplateHeight * 0.5) - (Self.Height * 0.8)
+            ZIndex: =1
+
+        Label2_2 As label:
+            Align: =Align.Center
+            OnSelect: =Select(IcnControlledFolder_2)
+            Text: =ThisItem.Title
+            Width: =Parent.TemplateWidth
+            X: =1
+            Y: =IcnControlledFolder_2.Y + IcnControlledFolder_2.Height
+            ZIndex: =2
+
+    Label3 As label:
+        Color: =RGBA(255, 255, 255, 1)
+        Height: =30
+        Size: |+
+            =8
+            
+        Text: ="v1.0.7"
+        Width: =40
+        X: =Parent.Width - Self.Width
+        ZIndex: =6
+

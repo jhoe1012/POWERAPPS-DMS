@@ -1,0 +1,473 @@
+ScrnSetPwrd As screen:
+    OnVisible: =NewForm(FrmDDPlants)
+
+    CmpntHeader_5 As CmpntHeader:
+        BackNavigation: =ScrnListRnd
+        HeaderText: =""
+        Width: =Parent.Width
+
+    FrmDDPlants As form:
+        AcceptsFocus: =false
+        DataSource: =dd_Plants
+        DefaultMode: =FormMode.New
+        Height: =92
+        Item: =lclPlantPasswrd
+        NumberOfColumns: =12
+        OnSuccess: |-
+            =Notify(
+                "Password Change Successfully",
+                NotificationType.Success,
+                3000
+            );
+            ResetForm(FrmDDPlants)
+        Width: =1363
+        Y: =CmpntHeader_5.Y+CmpntHeader_5.Height
+        ZIndex: =4
+
+        DataCard4 As typedDataCard.blankCard:
+            BorderStyle: =BorderStyle.Solid
+            DisplayMode: =DisplayMode.Edit
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Width: =339
+            X: =0
+            Y: =0
+            ZIndex: =1
+
+        DataCard5 As typedDataCard.blankCard:
+            BorderStyle: =BorderStyle.Solid
+            DisplayMode: =DisplayMode.Edit
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Width: =339
+            X: =9
+            Y: =0
+            ZIndex: =1
+
+            BtnOk_1 As button:
+                BorderColor: =gblPButtonApprove.BorderColor
+                BorderStyle: =gblPButtonApprove.BorderStyle
+                BorderThickness: =gblPButtonApprove.BorderThickness
+                Color: =gblPButtonApprove.Color
+                DisplayMode: =If(!IsBlank(DataCardValue12.Text), DisplayMode.Edit, DisplayMode.Disabled)
+                Fill: =gblPButtonApprove.Fill
+                FocusedBorderColor: =gblPButtonApprove.FocusedBorderColor
+                FocusedBorderThickness: =gblPButtonApprove.FocusedBorderThickness
+                Font: =gblPButtonApprove.Font
+                FontWeight: =gblPButtonApprove.FontWeight
+                Height: =30
+                HoverBorderColor: =gblPButtonApprove.HoverBorderColor
+                HoverColor: =gblPButtonApprove.HoverColor
+                HoverFill: =gblPButtonApprove.HoverFill
+                OnSelect: =SubmitForm(FrmDDPlants)
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                PressedBorderColor: =gblPButtonApprove.PressedBorderColor
+                PressedColor: =gblPButtonApprove.PressedColor
+                PressedFill: =gblPButtonApprove.PressedFill
+                Size: =gblPButtonApprove.Size
+                TabIndex: =13
+                Text: ="Update"
+                Width: =130
+                X: =4
+                Y: =(Parent.Height*0.5) - (Self.Height*0.5)
+                ZIndex: =1
+
+            BtnCancel_2 As button:
+                BorderColor: =gblPButtonReject.BorderColor
+                BorderStyle: =gblPButtonReject.BorderStyle
+                BorderThickness: =gblPButtonReject.BorderThickness
+                Color: =gblPButtonReject.Color
+                Fill: =gblPButtonReject.Fill
+                FocusedBorderColor: =gblPButtonReject.FocusedBorderColor
+                FocusedBorderThickness: =gblPButtonReject.FocusedBorderThickness
+                Font: =gblPButtonReject.Font
+                FontWeight: =gblPButtonReject.FontWeight
+                Height: =30
+                HoverBorderColor: =gblPButtonReject.HoverBorderColor
+                HoverColor: =gblPButtonReject.HoverColor
+                HoverFill: =gblPButtonReject.HoverFill
+                OnSelect: |-
+                    =ResetForm(FrmDDPlants);
+                    NewForm(FrmDDPlants);
+                    UpdateContext({lclPlantPasswrd: Blank()})
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                PressedBorderColor: =gblPButtonReject.PressedBorderColor
+                PressedColor: =gblPButtonReject.PressedColor
+                PressedFill: =gblPButtonReject.PressedFill
+                Size: =gblPButtonReject.Size
+                TabIndex: =14
+                Text: ="Cancel"
+                Width: =130
+                X: =BtnOk_1.X+ BtnOk_1.Width + 10
+                Y: =BtnOk_1.Y
+                ZIndex: =2
+
+        Title_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="Title"
+            Default: =ThisItem.Title
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: ="Plant"
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@dd_Plants], DataSourceInfo.MaxLength, "Title")
+            Required: =false
+            Update: =DataCardValue11.Text
+            Width: =200
+            X: =3
+            Y: =0
+            ZIndex: =5
+
+            DataCardKey3_1 As label:
+                AutoHeight: =true
+                BorderColor: =gblPLabel.BorderColor
+                BorderStyle: =gblPLabel.BorderStyle
+                BorderThickness: =gblPLabel.BorderThickness
+                Color: =gblPLabel.Color
+                Fill: =gblPLabel.Fill
+                Font: =gblPLabel.Font
+                FontWeight: =gblPLabel.FontWeight
+                Height: =gblPLabel.Height
+                Size: =gblPLabel.Size
+                Text: =Parent.DisplayName
+                Width: =Parent.Width - 60
+                Wrap: =false
+                X: =gblPLabel.X
+                Y: =gblPLabel.Y
+                ZIndex: =1
+
+            StarVisible2_5 As label:
+                Align: =Align.Center
+                Color: =gblPStar.Color
+                Font: =gblPStar.Font
+                FontWeight: =gblPStar.FontWeight
+                Height: =DataCardKey2.Height
+                Size: =gblPStar.Size
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                X: =40
+                Y: |-
+                    =DataCardKey3_1
+                    .Y
+                ZIndex: =3
+
+            ErrorMessage2_5 As label:
+                AutoHeight: =true
+                BorderColor: =gblPError.BorderColor
+                BorderStyle: =gblPError.BorderStyle
+                BorderThickness: =gblPError.BorderThickness
+                Color: =gblPError.Color
+                Fill: =gblPError.Fill
+                Font: =gblPError.Font
+                FontWeight: =gblPError.FontWeight
+                Height: =gblPError.Height
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =gblPError.Size
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =gblPError.X
+                Y: =DataCardValue11.Y + DataCardValue11.Height
+                ZIndex: =4
+
+            DataCardValue11 As text:
+                BorderColor: =If(IsBlank(Parent.Error), gblPInput.BorderColor, Color.Red)
+                BorderStyle: =gblPInput.BorderStyle
+                BorderThickness: =gblPInput.BorderThickness
+                Color: =gblPInput.Color
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =DisplayMode.View
+                Fill: =gblPInput.Fill
+                FocusedBorderThickness: =gblPInput.FocusedBorderThickness
+                Font: =gblPInput.Font
+                FontWeight: =gblPInput.FontWeight
+                Height: =gblPInput.Height
+                HoverBorderColor: =gblPInput.HoverBorderColor
+                HoverColor: =gblPInput.HoverColor
+                HoverFill: =gblPInput.HoverFill
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                PressedBorderColor: =gblPInput.PressedBorderColor
+                PressedColor: =gblPInput.PressedColor
+                PressedFill: =gblPInput.PressedFill
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Size: =gblPInput.Size
+                TabIndex: =5
+                Tooltip: =Parent.DisplayName
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardKey3_2.Y + DataCardKey3_2.Height + 5
+                ZIndex: =5
+
+        pwrd_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="pwrd"
+            Default: =ThisItem.pwrd
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: ="Password"
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@dd_Plants], DataSourceInfo.MaxLength, "pwrd")
+            Required: =true
+            Update: =DataCardValue12.Text
+            Width: =300
+            X: =6
+            Y: =0
+            ZIndex: =5
+
+            DataCardKey3_2 As label:
+                AutoHeight: =true
+                BorderColor: =gblPLabel.BorderColor
+                BorderStyle: =gblPLabel.BorderStyle
+                BorderThickness: =gblPLabel.BorderThickness
+                Color: =gblPLabel.Color
+                Fill: =gblPLabel.Fill
+                Font: =gblPLabel.Font
+                FontWeight: =gblPLabel.FontWeight
+                Height: =gblPLabel.Height
+                Size: =gblPLabel.Size
+                Text: =Parent.DisplayName
+                Width: =Parent.Width - 60
+                Wrap: =false
+                X: =gblPLabel.X
+                Y: =gblPLabel.Y
+                ZIndex: =1
+
+            DataCardValue12 As text:
+                BorderColor: =If(IsBlank(Parent.Error), gblPInput.BorderColor, Color.Red)
+                BorderStyle: =gblPInput.BorderStyle
+                BorderThickness: =gblPInput.BorderThickness
+                Color: =gblPInput.Color
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                Fill: =gblPInput.Fill
+                FocusedBorderThickness: =gblPInput.FocusedBorderThickness
+                Font: =gblPInput.Font
+                FontWeight: =gblPInput.FontWeight
+                Height: =gblPInput.Height
+                HoverBorderColor: =gblPInput.HoverBorderColor
+                HoverColor: =gblPInput.HoverColor
+                HoverFill: =gblPInput.HoverFill
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                PressedBorderColor: =gblPInput.PressedBorderColor
+                PressedColor: =gblPInput.PressedColor
+                PressedFill: =gblPInput.PressedFill
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Size: =gblPInput.Size
+                TabIndex: =5
+                Tooltip: =Parent.DisplayName
+                Width: =Parent.Width - 60
+                X: |
+                    =30
+                Y: =DataCardKey3_2.Y + DataCardKey3_2.Height + 5
+                ZIndex: =2
+
+            StarVisible2_16 As label:
+                Align: =Align.Center
+                Color: =gblPStar.Color
+                Font: =gblPStar.Font
+                FontWeight: =gblPStar.FontWeight
+                Height: =DataCardKey2.Height
+                Size: =gblPStar.Size
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: |-
+                    =DataCardKey3_2
+                    .Y
+                ZIndex: =3
+
+            ErrorMessage2_16 As label:
+                AutoHeight: =true
+                BorderColor: =gblPError.BorderColor
+                BorderStyle: =gblPError.BorderStyle
+                BorderThickness: =gblPError.BorderThickness
+                Color: =gblPError.Color
+                Fill: =gblPError.Fill
+                Font: =gblPError.Font
+                FontWeight: =gblPError.FontWeight
+                Height: =gblPError.Height
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =gblPError.Size
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =gblPError.X
+                Y: =DataCardValue12.Y + DataCardValue12.Height
+                ZIndex: =4
+
+    "GalDDPlant As gallery.'BrowseLayout_Vertical_TwoTextOneImageVariant_ver4.0'":
+        BorderThickness: =2
+        Height: =Parent.Height-(DataCardKey3_5.Y+DataCardKey3_5.Height) -10
+        Items: =Filter(dd_Plants, is_rnd=1)
+        Layout: =Layout.Vertical
+        OnSelect: |-
+            =EditForm(FrmDDPlants); UpdateContext({lclPlantPasswrd: GalDDPlant.Selected});
+        TemplatePadding: =0
+        TemplateSize: =30
+        Transition: =Transition.Pop
+        Width: =Parent.Width/2
+        X: =DataCardKey3_5.X
+        Y: =DataCardKey3_5.Y+DataCardKey3_5.Height
+        ZIndex: =9
+
+        Separator1 As rectangle:
+            Height: =1
+            OnSelect: =Select(Parent)
+            Width: =Parent.TemplateWidth
+            Y: =Parent.TemplateHeight - 1
+            ZIndex: =5
+
+        DataCardKey3_3 As label:
+            BorderColor: =gblPLabel.BorderColor
+            BorderStyle: =gblPLabel.BorderStyle
+            BorderThickness: =gblPLabel.BorderThickness
+            Color: =gblPLabel.Color
+            Fill: =gblPLabel.Fill
+            Font: =gblPLabel.Font
+            Height: =25
+            OnSelect: =Select(Parent)
+            Size: =gblPLabel.Size
+            Text: =ThisItem.Title
+            Width: =198
+            Wrap: =false
+            X: =40
+            Y: =gblPLabel.Y
+            ZIndex: =6
+
+        DataCardKey3_4 As label:
+            BorderColor: =gblPLabel.BorderColor
+            BorderStyle: =gblPLabel.BorderStyle
+            BorderThickness: =gblPLabel.BorderThickness
+            Color: =gblPLabel.Color
+            Fill: =gblPLabel.Fill
+            Font: =gblPLabel.Font
+            Height: =24
+            OnSelect: =Select(Parent)
+            Size: =gblPLabel.Size
+            Text: =ThisItem.pwrd
+            Width: =212
+            Wrap: =false
+            X: =DataCardKey3_3.X+DataCardKey3_3.Width
+            Y: =gblPLabel.Y
+            ZIndex: =7
+
+    GrpNav_2 As group:
+        Height: =5
+        Width: =5
+        X: =40
+        Y: =40
+        ZIndex: =9
+
+        Button1_2 As button:
+            BorderThickness: =0
+            Fill: =RGBA(1,1,1,1)
+            FocusedBorderThickness: =1
+            Height: =31
+            HoverFill: =RGBA(1,1,1,1)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =12
+            Text: ="Plant Password"
+            Width: =206
+            X: =204
+            ZIndex: =5
+
+        Button2_2 As button:
+            BorderThickness: =0
+            Fill: =RGBA(1,1,1,0)
+            FocusedBorderThickness: =1
+            Height: =31
+            HoverFill: =RGBA(1,1,1,1)
+            OnSelect: =Navigate(ScrnDDDocumentType,ScreenTransition.Fade)
+            PressedColor: =Self.HoverColor
+            PressedFill: =Self.HoverFill
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =12
+            Text: ="Document Type"
+            X: =410
+            ZIndex: =6
+
+        Button2_3 As button:
+            BorderThickness: =0
+            Fill: =RGBA(1,1,1,0)
+            FocusedBorderThickness: =1
+            Height: =31
+            HoverFill: =RGBA(1,1,1,1)
+            OnSelect: =Navigate(ScrnDDManual,ScreenTransition.Fade);
+            PressedColor: =Self.HoverColor
+            PressedFill: =Self.HoverFill
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =12
+            Text: ="Manual"
+            X: =Button2_2.X+Button2_2.Width
+            ZIndex: =7
+
+        Button2_4 As button:
+            BorderThickness: =0
+            Fill: =RGBA(1,1,1,0)
+            FocusedBorderThickness: =1
+            Height: =31
+            HoverFill: =RGBA(1,1,1,1)
+            OnSelect: =Navigate(ScrnDDSubArea,ScreenTransition.Fade)
+            PressedColor: =Self.HoverColor
+            PressedFill: =Self.HoverFill
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =12
+            Text: ="Sub Area"
+            X: =730
+            ZIndex: =8
+
+    DataCardKey3_5 As label:
+        BorderColor: =RGBA(0,0,0,1)
+        BorderThickness: =2
+        Color: =gblPLabel.Color
+        Fill: =gblPLabel.Fill
+        Font: =gblPLabel.Font
+        FontWeight: =gblPLabel.FontWeight
+        Height: =25
+        Size: =gblPLabel.Size
+        Text: ="            Plant                                      Password"
+        Width: =Parent.Width/2
+        Wrap: =false
+        X: =(Parent.Width*0.5)-(Self.Width*0.5)
+        Y: =FrmDDPlants.Y+FrmDDPlants.Height
+        ZIndex: =10
+

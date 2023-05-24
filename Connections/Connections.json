@@ -1,0 +1,129 @@
+{
+  "0a05152f-86c2-4fbd-bbe7-a8a1332a16a3": {
+    "connectionRef": {
+      "apiTier": "Standard",
+      "displayName": "SharePoint",
+      "iconUri": "https://connectoricons-prod.azureedge.net/releases/v1.0.1627/1.0.1627.3238/sharepointonline/icon.png",
+      "id": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
+      "parameterHints": {},
+      "parameterHintsV2": {}
+    },
+    "datasets": {
+      "https://goldilocksbakeshopinc.sharepoint.com/sites/documentmanagementsystem2": {
+        "dataSources": {
+          "dd_Company": {
+            "tableName": "b029efaa-c0b1-4050-96d1-ffd790f8bd98"
+          },
+          "dd_DocumentOriginator": {
+            "tableName": "3cd93cb3-c9e3-4519-87c9-c746a4e23b46"
+          },
+          "dd_DocumentType": {
+            "tableName": "544ea75f-3faa-4e6c-852b-c1d0c39d1998"
+          },
+          "dd_Manual": {
+            "tableName": "3be2f152-36fa-450b-a903-c057452736a0"
+          },
+          "dd_Plant-Dept": {
+            "tableName": "8b1cd967-2af3-4482-ae59-8699c3e46d4a"
+          },
+          "dd_Plants": {
+            "tableName": "b347b670-dc81-4d74-9b25-dbed92793853"
+          },
+          "dd_Status": {
+            "tableName": "f1c3208e-7980-4af3-9b56-4ebdcd2fd96d"
+          },
+          "dd_Sub-Area": {
+            "tableName": "476b9d86-f314-4f37-92b7-83c8fcabbfd3"
+          },
+          "DMS": {
+            "tableName": "52109e24-e760-4481-8262-7ffce10afd7c"
+          },
+          "Document": {
+            "tableName": "b636ff03-633f-4843-8204-6a40de9687b6"
+          },
+          "RevisionHistory": {
+            "tableName": "87605646-6570-4352-a349-79300ff31e95"
+          }
+        }
+      },
+      "https://goldilocksbakeshopinc.sharepoint.com/sites/qmspotal": {
+        "dataSources": {
+          "Users": {
+            "tableName": "ebb1432a-2635-415f-a524-17ff2127fb5b"
+          }
+        }
+      }
+    },
+    "dataSources": [
+      "RevisionHistory",
+      "DMS",
+      "Document",
+      "Users",
+      "dd_Company",
+      "dd_DocumentOriginator",
+      "dd_DocumentType",
+      "dd_Manual",
+      "dd_Plant-Dept",
+      "dd_Status",
+      "dd_Sub-Area",
+      "dd_Plants"
+    ],
+    "dependencies": {},
+    "dependents": [
+      "1305b9e9-6b1a-402f-acb6-04f0c0fb7034"
+    ],
+    "id": "0a05152f-86c2-4fbd-bbe7-a8a1332a16a3"
+  },
+  "1305b9e9-6b1a-402f-acb6-04f0c0fb7034": {
+    "connectionRef": {
+      "apiTier": "Standard",
+      "displayName": "Logic flows",
+      "iconUri": "https://connectoricons-prod.azureedge.net/releases/v1.0.1615/1.0.1615.3163/logicflows/icon.png",
+      "id": "/providers/microsoft.powerapps/apis/shared_logicflows",
+      "parameterHints": {
+        "0a05152f-86c2-4fbd-bbe7-a8a1332a16a3": {
+          "value": "shared_sharepointonline"
+        },
+        "workflowEntityId": {},
+        "workflowName": {
+          "value": "2655f30b-e576-4344-9620-7f4fb08f2f20"
+        }
+      },
+      "parameterHintsV2": {
+        "shared_sharepointonline": {
+          "value": "0a05152f-86c2-4fbd-bbe7-a8a1332a16a3"
+        },
+        "workflowEntityId": {},
+        "workflowName": {
+          "value": "2655f30b-e576-4344-9620-7f4fb08f2f20"
+        }
+      }
+    },
+    "datasets": {},
+    "dataSources": [
+      "UploadDocumenttoDMS"
+    ],
+    "dependencies": {
+      "shared_sharepointonline": "0a05152f-86c2-4fbd-bbe7-a8a1332a16a3"
+    },
+    "dependents": [],
+    "id": "1305b9e9-6b1a-402f-acb6-04f0c0fb7034"
+  },
+  "829f0b1c-1c21-4ce0-81e8-ee60d0735db1": {
+    "connectionRef": {
+      "apiTier": "Standard",
+      "displayName": "Office 365 Outlook",
+      "iconUri": "https://connectoricons-prod.azureedge.net/releases/v1.0.1626/1.0.1626.3238/office365/icon.png",
+      "id": "/providers/microsoft.powerapps/apis/shared_office365",
+      "parameterHints": {},
+      "parameterHintsV2": {}
+    },
+    "datasets": {},
+    "dataSources": [
+      "Office365Outlook"
+    ],
+    "dependencies": {},
+    "dependents": [],
+    "id": "829f0b1c-1c21-4ce0-81e8-ee60d0735db1"
+  }
+}

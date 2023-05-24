@@ -1,0 +1,1317 @@
+ScrnListControlledDoc As screen:
+    LoadingSpinner: =LoadingSpinner.Controls
+    OnVisible: |
+        =UpdateContext({lclDeleteCon:false,lclArchiveCon:false});
+
+    GalDMS As gallery.variableTemplateHeightGallery:
+        Height: =Parent.Height-(CmpntHeader_2.Height+HtmlHeader.Height)
+        Items: |-
+            =SortByColumns(
+                Filter(
+                    If(
+                        gblUserInfo.DMSRole = "Approver" || gblUserInfo.DMSRole = "Admin",
+                        Filter(
+                            DMS,
+                            is_RnD = Blank()
+                        ),
+                        Filter(
+                            DMS,
+                            is_RnD = Blank(),
+                            PlantAssign = gblUserInfo.Plant || gblUserInfo.Plant in SharedToPlant
+                        )
+                    ),
+                    StartsWith(
+                        DocumentTitle,
+                        TxtCD_DocTitle
+                    ),
+                    StartsWith(
+                        DocumentControlNumber,
+                        TxtCD_DocCntrlNo
+                    ),
+                    IsBlank(DpCD_EffectivityDate.SelectedDate) || IsEmpty(DpCD_EffectivityDate.SelectedDate) || EffectivityDate = DpCD_EffectivityDate.SelectedDate,
+                    IsBlank(CmbxCD_DocumentStatus.Selected.Value) || IsEmpty(CmbxCD_DocumentStatus.Selected.Value) || DocumentStatus = CmbxCD_DocumentStatus.Selected.Value,
+                    IsBlank(CmbxCD_AuthorName.Selected.Result) || IsEmpty(CmbxCD_AuthorName.Selected.Result) || AuthorName = CmbxCD_AuthorName.Selected.Result,
+                    IsBlank(CmbxCD_Plant.Selected.Title) || IsEmpty(CmbxCD_Plant.Selected.Title) || Plant = CmbxCD_Plant.Selected.Title,
+                    IsBlank(CmbxCD_Company.Selected.Title) || IsEmpty(CmbxCD_Company.Selected.Title) || Company = CmbxCD_Company.Selected.Title,
+                    IsBlank(CmbxCD_Manual.Selected.Title) || IsEmpty(CmbxCD_Manual.Selected.Title) || Manual = CmbxCD_Manual.Selected.Title,
+                    IsBlank(CmbxCD_SubArea.Selected.Title) || IsEmpty(CmbxCD_SubArea.Selected.Title) || 'Sub-Area' = CmbxCD_SubArea.Selected.Title,
+                    IsBlank(CmbxCD_DocumentType.Selected.Desc) || IsEmpty(CmbxCD_DocumentType.Selected.Desc) || DocumentType = CmbxCD_DocumentType.Selected.Desc
+                ),
+                "DocumentStatus",
+                SortOrder.Descending,
+                "PlantAssign",
+                SortOrder.Ascending,
+                "EffectivityDate",
+                SortOrder.Descending
+            )
+        Layout: =Layout.Vertical
+        TemplatePadding: =-3
+        TemplateSize: =25
+        Width: =Parent.Width
+        Y: =80
+        ZIndex: =1
+
+        HtmlDetails As htmlViewer:
+            AutoHeight: =true
+            HtmlText: |-
+                ="<table
+                style='table-layout: fixed;width: 100%; border: solid 1px black;border-collapse: collapse; background-color: RGBA(255, 255, 255, 1);text-align:center;'>
+                <tr>
+                <td
+                style='border: solid 1px black; padding: 5px ; min-width: 21.8%;max-width: 21.8%;width: 21.8%; '>
+                " & ThisItem.DocumentTitle & "</td>
+                <td
+                style='border: solid 1px black; padding: 5px ; min-width: 21.8%;max-width: 21.8%;width: 21.8%; '>
+                " & ThisItem.DocumentControlNumber & "</td>
+                <td
+                style='border: solid 1px black; padding: 5px ; min-width: 6%;max-width: 6%;width: 6%;'>
+                " & Text(Value(ThisItem.VersionNo),"[$-en]00") & " </td>
+                <td
+                style='border: solid 1px black; padding: 5px ; min-width: 7.8%;max-width: 7.8%;width: 7.8%;'>
+                " & Text(
+                    ThisItem.EffectivityDate,
+                    "mmm dd, yyyy"
+                ) & "</td>
+                <td
+                style='border: solid 1px black; padding: 5px ; min-width: 12%;max-width: 12%;width: 12%;'>
+                " & ThisItem.AuthorName & "</td>
+                <td
+                style='border: solid 1px black; padding: 5px ; min-width: 11.8%;max-width: 11.8%;width: 11.8%;'>
+                " & ThisItem.DocumentType & "</td>
+                <td
+                style='border: solid 1px black; padding: 5px ; min-width: 11.9%;max-width: 11.9%;width: 11.9%;'>
+                " & ThisItem.DocumentOriginator & "</td>
+                <td
+                style='border: solid 1px black; padding: 5px ; min-width: 6.9%;max-width: 6.9%;width: 6.9%;'>
+                " & ThisItem.DocumentStatus & "</td>
+                </table>"
+            OnSelect: |-
+                =UpdateContext({lclShowRevisionHistory: true});
+                ClearCollect(
+                    colRevisionTable,
+                    SortByColumns(
+                        Filter(
+                            Document,
+                            DMS_ID = GalDMS.Selected.ID
+                        ),
+                        "ID"
+                    )
+                )
+            PaddingBottom: =0
+            PaddingLeft: =3
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =9
+            Tooltip: =ThisItem.PlantAssign
+            Width: =Parent.Width
+            ZIndex: =1
+
+    CmpntHeader_2 As CmpntHeader:
+        HeaderText: ="Controlled Documents"
+        ShowIcon: =false
+        Width: =Parent.Width
+        ZIndex: =2
+
+    BtnAddNew As button:
+        BorderColor: =gblPNav.BorderColor
+        BorderStyle: =gblPNav.BorderStyle
+        BorderThickness: |
+            =gblPNav.BorderThickness
+        Color: =gblPNav.Color
+        Fill: =gblPNav.Fill
+        FocusedBorderColor: =gblPNav.FocusedBorderColor
+        FocusedBorderThickness: =gblPNav.FocusedBorderThickness
+        Font: =gblPNav.Font
+        FontWeight: =gblPNav.FontWeight
+        Height: =gblPNav.Height
+        HoverBorderColor: =gblPNav.HoverBorderColor
+        HoverColor: =gblPNav.HoverColor
+        HoverFill: =gblPNav.HoverFill
+        OnSelect: |
+            =NewForm(FrmDMS);
+            Set(gblDMS,Blank());
+            Navigate(
+                ScrnForm,
+                ScreenTransition.Fade, {lclIsRnD: false}
+            );
+            ClearCollect(
+                colRevisionTable,
+                {}
+            );
+        PressedBorderColor: =gblPNav.PressedBorderColor
+        PressedColor: =gblPNav.PressedColor
+        PressedFill: =gblPNav.PressedFill
+        RadiusBottomLeft: =gblPNav.RadiusBottomLeft
+        RadiusBottomRight: =gblPNav.RadiusBottomRight
+        RadiusTopLeft: =gblPNav.RadiusTopLeft
+        RadiusTopRight: =gblPNav.RadiusBottomRight
+        Text: ="New Document"
+        Visible: =gblUserInfo.DMSRole = "Uploader" || gblUserInfo.DMSRole = "Approver"
+        Width: =200
+        X: =Parent.Width *0.7
+        Y: =3
+        ZIndex: =3
+
+    HtmlHeader As htmlViewer:
+        AutoHeight: =true
+        HtmlText: |-
+            ="<table
+            style='table-layout: fixed;width: 100%; border: solid 1px black;border-collapse: collapse; background-color: RGBA(255, 255, 255, 1);text-align:center;'>
+            <tr>
+            <td
+            style='border: solid 1px black; padding: 5px ;font-weight: bold; min-width: 22%;max-width: 22%;width: 22%; '>
+            DOCUMENT TITLE</td>
+            <td
+            style='border: solid 1px black; padding: 5px ;font-weight: bold; min-width: 22%;max-width: 22%;width: 22%; '>
+            DOCUMENT CONTROL NUMBER</td>
+            <td
+            style='border: solid 1px black; padding: 5px ;font-weight: bold; min-width: 6%;max-width: 6%;width: 6%;'>
+            VERSION NO. </td>
+            <td
+            style='border: solid 1px black; padding: 5px ;font-weight: bold; min-width: 8%;max-width: 8%;width: 8%;'>
+            EFFECTIVITY DATE</td>
+            <td
+            style='border: solid 1px black; padding: 5px ;font-weight: bold; min-width: 12%;max-width: 12%;width: 12%;'>
+            AUTHOR/S</td>
+            
+            <td
+            style='border: solid 1px black; padding: 5px ;font-weight: bold; min-width: 12%;max-width: 12%;width: 12%;'>
+            TYPE OF DOCUMENT</td>
+            <td
+            style='border: solid 1px black; padding: 5px ;font-weight: bold; min-width: 12%;max-width: 12%;width: 12%;'>
+            DOCUMENT ORIGINATOR</td>
+            <td
+            style='border: solid 1px black; padding: 5px ;font-weight: bold; min-width: 7%;max-width: 7%;width: 7%;'>
+            STATUS</td>
+            </table>"
+        PaddingBottom: =0
+        PaddingLeft: =0
+        PaddingRight: =0
+        PaddingTop: =0
+        Size: =10
+        Width: =Parent.Width
+        Y: |
+            =CmpntHeader_2.Height+CmpntHeader_2.Y+1
+        ZIndex: =4
+
+    Canvas1_2 As fluidGrid.fluidGridWithBlankCard:
+        BorderThickness: =0
+        Height: =Parent.Height - Self.Y
+        Visible: =lclShowRevisionHistory
+        Width: =Parent.Width
+        ZIndex: =7
+
+        DataCard1_2 As dataCard:
+            BorderColor: =RGBA(0, 0, 0, 1)
+            BorderStyle: =BorderStyle.Solid
+            BorderThickness: =0
+            DisplayMode: =DisplayMode.Edit
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =HtmlRevisionHistory.Height +50
+            Width: =Parent.Width
+            X: =0
+            Y: =0
+            ZIndex: =1
+
+            Rectangle1 As rectangle:
+                Fill: =RGBA(0, 0, 0, 0)
+                Height: =Parent.Height
+                OnSelect: |-
+                    =UpdateContext({lclShowRevisionHistory: false})
+                Width: =Parent.Width
+                ZIndex: =1
+
+            HtmlRevisionHistory As htmlViewer:
+                AutoHeight: =true
+                Height: =728 
+                HtmlText: |-
+                    =" <div
+                          style='
+                            margin: 10px;
+                            background-color: white;
+                            box-shadow: 0px 5px 20px 1px #ccc;
+                            border-radius: 10px;
+                            padding-left: 10px;
+                            height:" & 399 + GalRevisionTable.Height & "px;
+                          '
+                        >
+                          <br />
+                          <table
+                            style='
+                              table-layout: fixed;
+                              width: 99%;
+                              height: 50px;
+                              border: solid 1px black;
+                              border-collapse: collapse;
+                              background-color: RGBA(255, 255, 255, 1);
+                            '
+                          >
+                            <tr>
+                              <td
+                                style='border: solid 1px black; padding: 5px; font-weight: bold'
+                              ><img src='https://goldilocksbakeshopinc.sharepoint.com/sites/documentmanagementsystem2/Shared%20Documents/goldilocksLogo.jpg' alt='Goldilocks Logo' style='padding:auto auto;width:300px;heigth:100px' ></td>
+                              <td style='border: solid 1px black; padding: 5px; font-weight: bold;text-align:center;font-size:2rem'>
+                                REVISION HISTORY
+                              </td>
+                              <td style='border: solid 1px black; padding: 5px; font-weight: bold'>
+                                Document Type: <br />
+                                <p style='font-weight: normal; text-align: center'>
+                                  " & GalDMS.Selected.DocumentType & "
+                                </p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style='border: solid 1px black; padding: 5px; font-weight: bold'
+                                colspan='2'
+                              >
+                                Document Title: <br />
+                                <p style='font-weight: normal; text-align: center'>
+                                   " & GalDMS.Selected.DocumentTitle & "
+                                </p>
+                              </td>
+                              <td style='border: solid 1px black; padding: 5px; font-weight: bold'>
+                                Document Owner: <br />
+                                <p style='font-weight: normal; text-align: center'>
+                                   " & GalDMS.Selected.DocumentOriginator & "
+                                </p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style='border: solid 1px black; padding: 5px; font-weight: bold'>
+                                Document Number: <br />
+                                <p style='font-weight: normal; text-align: center'>
+                                   " & GalDMS.Selected.DocumentControlNumber & "
+                                </p>
+                              </td>
+                              <td style='border: solid 1px black; padding: 5px; font-weight: bold'>
+                                Version Number: <br />
+                                <p style='font-weight: normal; text-align: center'> " & Text(
+                        Value(GalDMS.Selected.VersionNo),
+                        "[$-en]00"
+                    ) & "</p>
+                              </td>
+                              <td style='border: solid 1px black; padding: 5px; font-weight: bold'>
+                                Effectivity Date : <br />
+                                <p style='font-weight: normal; text-align: center'>
+                                   " & Text(
+                        GalDMS.Selected.EffectivityDate,
+                        "dd mmm yyyy"
+                    ) & " 
+                                </p>
+                              </td>
+                            </tr>
+                          </table>
+                          <br />
+                          <table
+                            style='
+                              table-layout: fixed;
+                              width: 99%;
+                              border: solid 1px black;
+                              border-collapse: collapse;
+                              background-color: RGBA(255, 255, 255, 1);
+                              text-align: center;
+                              font-size:15px;
+                            '
+                          >
+                            <tr>
+                              <td
+                                style='border: solid 1px black; padding: 5px; font-weight: bold'
+                                colspan='5'
+                              >
+                                REVISION HISTORY TABLE
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style='border: solid 1px black; padding: 5px; font-weight: bold'>
+                                Revision Date
+                              </td>
+                               <td style='border: solid 1px black; padding: 5px; font-weight: bold'>
+                                Effectivity Date
+                              </td>
+                              <td style='border: solid 1px black; padding: 5px; font-weight: bold'>
+                                Version No.
+                              </td>
+                              <td style='border: solid 1px black; padding: 5px; font-weight: bold'>
+                                Description / Reason for Revision
+                              </td>
+                              <td style='border: solid 1px black; padding: 5px; font-weight: bold'>
+                                Approved By
+                              </td>
+                            </tr>
+                          </table>
+                          <br />
+                        </div>"
+                Width: =1064
+                X: =(Parent.Width * 0.5) - (Self.Width*0.5)
+                ZIndex: =2
+
+            GalRevisionTable As gallery.variableTemplateHeightGallery:
+                Height: =316
+                Items: =SortByColumns(colRevisionTable, "VersionNo",SortOrder.Descending)
+                Layout: =Layout.Vertical
+                TemplatePadding: =1
+                TemplateSize: =HtmlViewDetails.Height
+                Width: =HtmlRevisionHistory.Width - 40
+                X: =HtmlRevisionHistory.X + 25
+                Y: =385
+                ZIndex: =3
+
+                HtmlViewDetails As htmlViewer:
+                    AutoHeight: =true
+                    HtmlText: |-
+                        ="<table
+                                style='
+                                  table-layout: fixed;
+                                  width: 99%;
+                                  height: 50%;
+                                  border: solid 1px black;
+                                  border-collapse: collapse;
+                                  background-color: RGBA(255, 255, 255, 1);
+                                '
+                              >
+                            <tr>
+                            <td style='border: solid 1px black; padding: 5px; text-align:center;'>" & Text(
+                            ThisItem.RevisionDate,
+                            "mm-dd-yyyy"
+                        ) & "</td> 
+                            <td style='border: solid 1px black; padding: 5px; text-align:center;'>" & Text(
+                            ThisItem.EffectivityDate,
+                            "mm-dd-yyyy"
+                        ) & " </td>
+                            <td style='border: solid 1px black; padding: 5px; text-align:center;'>" & Text(
+                            Value(ThisItem.VersionNo),
+                            "[$-en]00"
+                        ) & " </td>
+                            <td style='border: solid 1px black; padding: 5px;'>" & ThisItem.Desc_ReasonofRevision & "</td>
+                            <td style='border: solid 1px black; padding: 5px; text-align:center;'>" & ThisItem.ApproverName & "</td>
+                            </tr>
+                            </table>
+                        "
+                    OnSelect: =Select(Parent)
+                    PaddingBottom: =0
+                    PaddingLeft: =0
+                    PaddingRight: =0
+                    PaddingTop: =0
+                    Width: =Parent.Width
+                    ZIndex: =1
+
+                IcnLink As icon.View:
+                    Height: =15
+                    Icon: =Icon.Link
+                    OnSelect: |-
+                        =Launch(ThisItem.'Link to item' & "?web=1")
+                        
+                        /*Set(
+                            gblDocumentLink,
+                            {
+                                Thumbnail: GalRevisionTable.Selected.Thumbnail.Large,
+                                FileName: GalRevisionTable.Selected.'File name with extension',
+                                FilePath: GalRevisionTable.Selected.'Folder path'
+                            }
+                        );
+                        Navigate(
+                            ScrnViewDocument,
+                            ScreenTransition.Fade, {lclIsRnd:false}
+                        )*/
+                    Width: =34
+                    X: =Parent.Width * 0.53
+                    Y: =(HtmlViewDetails.Height * 0.5) - (Self.Height * 0.5)
+                    ZIndex: =2
+
+            GrpBtnRevision As group:
+                Height: =5
+                Width: =5
+                X: =40
+                Y: =40
+                ZIndex: =8
+
+                BtnDeleteConDoc As button:
+                    BorderThickness: =1
+                    Fill: =RGBA(255, 0, 0, 1)
+                    FocusedBorderThickness: =1
+                    Height: =18
+                    HoverFill: =ColorFade(Self.Fill, -20%)
+                    OnSelect: |-
+                        =UpdateContext({lclDeleteCon: true})
+                    RadiusBottomLeft: =5
+                    RadiusBottomRight: =5
+                    RadiusTopLeft: =5
+                    RadiusTopRight: =5
+                    Size: =10
+                    Text: ="Delete"
+                    Visible: = gblUserInfo.DMSRole = "Approver"
+                    Width: =92
+                    X: =HtmlRevisionHistory.X+50
+                    Y: =HtmlRevisionHistory.Y + 16
+                    ZIndex: =4
+
+                BtnEdit As button:
+                    BorderThickness: =1
+                    FocusedBorderThickness: =1
+                    Height: =18
+                    OnSelect: |-
+                        =Set(
+                            gblDMS,
+                            GalDMS.Selected
+                        );
+                        EditForm(FrmDMS);
+                        Navigate(
+                            ScrnForm,
+                            ScreenTransition.Fade,{lclIsRnD: false}
+                        )
+                    RadiusBottomLeft: =5
+                    RadiusBottomRight: =5
+                    RadiusTopLeft: =5
+                    RadiusTopRight: =5
+                    Size: =10
+                    Text: ="Edit"
+                    Visible: =GalDMS.Selected.'Created By'.Email = gblUserEmail || gblUserInfo.DMSRole = "Approver"
+                    Width: =92
+                    X: =(HtmlRevisionHistory.X+HtmlRevisionHistory.Width) - (Self.Width + 30)
+                    Y: =HtmlRevisionHistory.Y + 16
+                    ZIndex: =5
+
+                BtnArchived As button:
+                    BorderThickness: =1
+                    Fill: =RGBA(255, 0, 0, 1)
+                    FocusedBorderThickness: =1
+                    Height: =18
+                    HoverFill: =ColorFade(Self.Fill, -20%)
+                    OnSelect: |-
+                        =UpdateContext({lclArchiveCon: true})
+                    RadiusBottomLeft: =5
+                    RadiusBottomRight: =5
+                    RadiusTopLeft: =5
+                    RadiusTopRight: =5
+                    Size: =10
+                    Text: ="Archive"
+                    Visible: = gblUserInfo.DMSRole = "Approver"
+                    Width: =92
+                    X: =BtnDeleteConDoc.X+BtnDeleteConDoc.Width + 10
+                    Y: =HtmlRevisionHistory.Y + 16
+                    ZIndex: =6
+
+                BtnPrint As button:
+                    BorderThickness: =1
+                    FocusedBorderThickness: =1
+                    Height: =18
+                    OnSelect: |-
+                        =Navigate(ScrnPrint,ScreenTransition.Fade);
+                        Set(gblPrintData, GalDMS.Selected);
+                        ClearCollect(colPrintData, GalRevisionTable.AllItems)
+                    RadiusBottomLeft: =5
+                    RadiusBottomRight: =5
+                    RadiusTopLeft: =5
+                    RadiusTopRight: =5
+                    Size: =10
+                    Text: ="Print"
+                    Width: =100
+                    X: =(HtmlRevisionHistory.X + HtmlRevisionHistory.Width) - ((Self.Width + 40) + BtnEdit.Width)
+                    Y: =HtmlRevisionHistory.Y + 16
+                    ZIndex: =7
+
+    IcnFilter As icon.FilterFlat:
+        Color: =RGBA(255, 255, 255, 1)
+        Height: =31
+        Icon: =Icon.FilterFlat
+        OnSelect: |-
+            =UpdateContext({lclShowFilter:true})
+        Width: =40
+        X: =Parent.Width *0.9
+        ZIndex: =8
+
+    GrpNav1 As group:
+        Height: =5
+        Width: =5
+        X: =40
+        Y: =40
+        ZIndex: =8
+
+        Button1 As button:
+            BorderThickness: =0
+            Fill: =RGBA(1,1,1,1)
+            FocusedBorderThickness: =1
+            Height: =31
+            HoverFill: =RGBA(1,1,1,1)
+            OnSelect: |-
+                =If(
+                    gblUserInfo.DMSRole = "Approver" || gblUserInfo.DMSRole = "Admin",
+                    Navigate(
+                        ScrnFilterControlledDoc,
+                        ScreenTransition.Fade
+                    ),
+                    false
+                )
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =12
+            Text: ="Controlled Documents"
+            Width: =206
+            X: =Parent.Width*0.3
+            ZIndex: =5
+
+        Button2 As button:
+            BorderThickness: =0
+            Fill: =RGBA(1,1,1,0)
+            FocusedBorderThickness: =0
+            Height: =31
+            HoverFill: =RGBA(1,1,1,1)
+            OnSelect: |-
+                =If(
+                    gblUserInfo.DMSRole = "Approver" || gblUserInfo.DMSRole = "Admin",
+                    Navigate(
+                        ScrnFilterRnD,
+                        ScreenTransition.Fade
+                    ),
+                    Navigate(
+                        ScrnListRnd,
+                        ScreenTransition.Fade
+                    )
+                )
+            PressedColor: =Self.HoverColor
+            PressedFill: =Self.HoverFill
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =12
+            Text: ="R&D Documents"
+            Visible: |-
+                =((gblUserInfo.DMSRole = "Uploader")   && gblUserInfo.Plant in (Filter(
+                    dd_Plants,
+                    is_rnd = 1
+                ).Title)) || gblUserInfo.DMSRole = "Approver" || gblUserInfo.DMSRole = "Admin" || gblUserInfo.DMSRole = "Reg-Viewer" || gblUserInfo.DMSRole = "Qci-Viewer"
+                //
+            X: =Button1.X+Button1.Width
+            ZIndex: =6
+
+    IconSettings_1 As icon.FilterFlat:
+        Color: =RGBA(255, 255, 255, 1)
+        Height: =31
+        Icon: =Icon.Settings
+        OnSelect: =Navigate(ScrnSetPwrd,ScreenTransition.Fade)
+        Visible: =gblUserInfo.DMSRole = "Approver"
+        Width: =40
+        X: =Parent.Width *0.95
+        ZIndex: =31
+
+    GrpCD_Filter As group:
+        Height: =5
+        Width: =5
+        X: =60
+        Y: =60
+        ZIndex: =32
+
+        CmpntBGShadow_1 As CmpntBGShadow:
+            Height: =Parent.Height +50
+            Visible: =lclShowFilter
+            Width: =Parent.Width * .45
+            X: =Parent.Width - Self.Width
+            ZIndex: =9
+
+        LblFilter As label:
+            BorderColor: =gblPLabel.BorderColor
+            BorderStyle: =gblPLabel.BorderStyle
+            BorderThickness: =gblPLabel.BorderThickness
+            Color: =gblPLabel.Color
+            Fill: =gblPLabel.Fill
+            Font: =gblPLabel.Font  
+            FontWeight: =gblPLabel.FontWeight
+            Height: =gblPLabel.Height 
+            Size: =gblPLabel.Size
+            Text: ="Document Title"
+            Visible: =lclShowFilter
+            Width: =180
+            X: =CmpntBGShadow_1.X +60
+            Y: =CmpntBGShadow_1.Y+40
+            ZIndex: =10
+
+        LblFilter_1 As label:
+            BorderColor: =gblPLabel.BorderColor
+            BorderStyle: =gblPLabel.BorderStyle
+            BorderThickness: =gblPLabel.BorderThickness
+            Color: =gblPLabel.Color
+            Fill: =gblPLabel.Fill
+            Font: =gblPLabel.Font  
+            FontWeight: =gblPLabel.FontWeight
+            Height: =gblPLabel.Height 
+            Size: =gblPLabel.Size
+            Text: ="Document Control No."
+            Visible: =lclShowFilter
+            Width: =180
+            X: =LblFilter.X
+            Y: =LblFilter.Y+LblFilter.Height+5
+            ZIndex: =11
+
+        LblFilter_2 As label:
+            BorderColor: =gblPLabel.BorderColor
+            BorderStyle: =gblPLabel.BorderStyle
+            BorderThickness: =gblPLabel.BorderThickness
+            Color: =gblPLabel.Color
+            Fill: =gblPLabel.Fill
+            Font: =gblPLabel.Font  
+            FontWeight: =gblPLabel.FontWeight
+            Height: =gblPLabel.Height 
+            Size: =gblPLabel.Size
+            Text: ="Effectiviy Date"
+            Visible: =lclShowFilter
+            Width: =180
+            X: =LblFilter_1.X
+            Y: =LblFilter_1.Y+LblFilter_1.Height+5
+            ZIndex: =12
+
+        LblFilter_3 As label:
+            BorderColor: =gblPLabel.BorderColor
+            BorderStyle: =gblPLabel.BorderStyle
+            BorderThickness: =gblPLabel.BorderThickness
+            Color: =gblPLabel.Color
+            Fill: =gblPLabel.Fill
+            Font: =gblPLabel.Font  
+            FontWeight: =gblPLabel.FontWeight
+            Height: =gblPLabel.Height 
+            Size: =gblPLabel.Size
+            Text: ="Document Status"
+            Visible: =lclShowFilter
+            Width: =180
+            X: =LblFilter_2.X
+            Y: =LblFilter_2.Y+LblFilter_2.Height+5
+            ZIndex: =13
+
+        LblFilter_4 As label:
+            BorderColor: =gblPLabel.BorderColor
+            BorderStyle: =gblPLabel.BorderStyle
+            BorderThickness: =gblPLabel.BorderThickness
+            Color: =gblPLabel.Color
+            Fill: =gblPLabel.Fill
+            Font: =gblPLabel.Font  
+            FontWeight: =gblPLabel.FontWeight
+            Height: =gblPLabel.Height 
+            Size: =gblPLabel.Size
+            Text: ="Author Name"
+            Visible: =lclShowFilter
+            Width: =180
+            X: =LblFilter_3.X
+            Y: =LblFilter_3.Y+LblFilter_3.Height+5
+            ZIndex: =14
+
+        LblFilter_5 As label:
+            BorderColor: =gblPLabel.BorderColor
+            BorderStyle: =gblPLabel.BorderStyle
+            BorderThickness: =gblPLabel.BorderThickness
+            Color: =gblPLabel.Color
+            Fill: =gblPLabel.Fill
+            Font: =gblPLabel.Font  
+            FontWeight: =gblPLabel.FontWeight
+            Height: =gblPLabel.Height 
+            Size: =gblPLabel.Size
+            Text: ="Plant / Dept."
+            Visible: =lclShowFilter
+            Width: =180
+            X: =LblFilter_4.X
+            Y: =LblFilter_4.Y+LblFilter_4.Height+5
+            ZIndex: =15
+
+        LblFilter_6 As label:
+            BorderColor: =gblPLabel.BorderColor
+            BorderStyle: =gblPLabel.BorderStyle
+            BorderThickness: =gblPLabel.BorderThickness
+            Color: =gblPLabel.Color
+            Fill: =gblPLabel.Fill
+            Font: =gblPLabel.Font  
+            FontWeight: =gblPLabel.FontWeight
+            Height: =gblPLabel.Height 
+            Size: =gblPLabel.Size
+            Text: ="Company"
+            Visible: =lclShowFilter
+            Width: =180
+            X: =LblFilter_5.X
+            Y: =LblFilter_5.Y+LblFilter_5.Height+5
+            ZIndex: =16
+
+        LblFilter_7 As label:
+            BorderColor: =gblPLabel.BorderColor
+            BorderStyle: =gblPLabel.BorderStyle
+            BorderThickness: =gblPLabel.BorderThickness
+            Color: =gblPLabel.Color
+            Fill: =gblPLabel.Fill
+            Font: =gblPLabel.Font  
+            FontWeight: =gblPLabel.FontWeight
+            Height: =gblPLabel.Height 
+            Size: =gblPLabel.Size
+            Text: ="Manual"
+            Visible: =lclShowFilter
+            Width: =180
+            X: =LblFilter_6.X
+            Y: =LblFilter_6.Y+LblFilter_6.Height+5
+            ZIndex: =17
+
+        LblFilter_8 As label:
+            BorderColor: =gblPLabel.BorderColor
+            BorderStyle: =gblPLabel.BorderStyle
+            BorderThickness: =gblPLabel.BorderThickness
+            Color: =gblPLabel.Color
+            Fill: =gblPLabel.Fill
+            Font: =gblPLabel.Font  
+            FontWeight: =FontWeight.Bold
+            Height: =gblPLabel.Height 
+            Size: =gblPLabel.Size
+            Text: ="Sub-Area"
+            Visible: =lclShowFilter
+            Width: =180
+            X: =LblFilter_7.X
+            Y: =LblFilter_7.Y+LblFilter_7.Height+5
+            ZIndex: =18
+
+        TxtCD_DocTitle As text:
+            BorderColor: =gblPInput.BorderColor
+            BorderStyle: =gblPInput.BorderStyle
+            BorderThickness: =gblPInput.BorderThickness
+            Color: =gblPInput.Color
+            Default: =""
+            Fill: =gblPInput.Fill
+            FocusedBorderThickness: =gblPInput.FocusedBorderThickness
+            Font: =gblPInput.Font
+            FontWeight: =gblPInput.FontWeight
+            Height: =gblPInput.Height
+            HoverBorderColor: =gblPInput.HoverBorderColor
+            HoverColor: =gblPInput.HoverColor    
+            HoverFill: =gblPInput.HoverFill
+            PressedBorderColor: =gblPInput.PressedBorderColor
+            PressedColor: =gblPInput.PressedColor
+            PressedFill: =gblPInput.PressedFill
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =gblPInput.Size
+            Visible: =lclShowFilter
+            Width: =250
+            X: =LblFilter.X+LblFilter.Width
+            Y: =LblFilter.Y
+            ZIndex: =19
+
+        TxtCD_DocCntrlNo As text:
+            BorderColor: =gblPInput.BorderColor
+            BorderStyle: =gblPInput.BorderStyle
+            BorderThickness: =gblPInput.BorderThickness
+            Color: =gblPInput.Color
+            Default: =""
+            Fill: =gblPInput.Fill
+            FocusedBorderThickness: =gblPInput.FocusedBorderThickness
+            Font: =gblPInput.Font
+            FontWeight: =gblPInput.FontWeight
+            Height: =gblPInput.Height
+            HoverBorderColor: =gblPInput.HoverBorderColor
+            HoverColor: =gblPInput.HoverColor    
+            HoverFill: =gblPInput.HoverFill
+            PressedBorderColor: =gblPInput.PressedBorderColor
+            PressedColor: =gblPInput.PressedColor
+            PressedFill: =gblPInput.PressedFill
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =gblPInput.Size
+            Visible: =lclShowFilter
+            Width: =250
+            X: =TxtCD_DocTitle.X
+            Y: =LblFilter_1.Y
+            ZIndex: =20
+
+        DpCD_EffectivityDate As datepicker:
+            BorderColor: =gblPInput.BorderColor
+            BorderStyle: =gblPInput.BorderStyle
+            BorderThickness: =gblPInput.BorderThickness
+            Color: =gblPInput.Color
+            DefaultDate: =
+            Fill: =gblPInput.Fill
+            FocusedBorderThickness: =gblPInput.FocusedBorderThickness
+            Font: =gblPInput.Font
+            FontWeight: =gblPInput.FontWeight
+            Height: =gblPInput.Height
+            HoverBorderColor: =gblPInput.HoverBorderColor
+            InputTextPlaceholder: =
+            IsEditable: =true
+            PaddingTop: =5
+            PressedBorderColor: =gblPInput.PressedBorderColor
+            Size: =gblPInput.Size
+            Visible: =lclShowFilter
+            Width: =250
+            X: =TxtCD_DocTitle.X
+            Y: =LblFilter_2.Y
+            ZIndex: =21
+
+        CmbxCD_DocumentStatus As combobox:
+            BorderColor: =gblPInput.BorderColor
+            BorderStyle: =gblPInput.BorderStyle
+            BorderThickness: =gblPInput.BorderThickness
+            ChevronBackground: =gblPInput.ChevronBackground
+            ChevronFill: =gblPInput.ChevronFill
+            ChevronHoverFill: =gblPInput.ChevronHoverFill
+            Color: =gblPInput.Color
+            DisplayFields: =["Value"]
+            Fill: =gblPInput.Fill
+            FocusedBorderThickness: =gblPInput.FocusedBorderThickness
+            Font: =gblPInput.Font
+            FontWeight: =gblPInput.FontWeight
+            Height: =gblPInput.Height
+            HoverBorderColor: =gblPInput.HoverBorderColor
+            HoverColor: =gblPInput.HoverColor
+            HoverFill: =gblPInput.HoverFill
+            InputTextPlaceholder: =""
+            IsSearchable: =false
+            Items: =["Active", "Pending","Archive"]
+            PressedBorderColor: =gblPInput.PressedBorderColor
+            PressedColor: =gblPInput.PressedColor
+            PressedFill: =gblPInput.PressedFill
+            SearchFields: =["Value"]
+            SearchItems: =[]
+            SelectionTagColor: =gblPInput.SelectionTagColor
+            SelectionTagFill: =gblPInput.SelectionTagFill
+            SelectMultiple: =false
+            Size: =gblPInput.Size
+            Visible: =lclShowFilter
+            Width: =250
+            X: =TxtCD_DocTitle.X
+            Y: =LblFilter_3.Y
+            ZIndex: =22
+
+        CmbxCD_Plant As combobox:
+            BorderColor: =gblPInput.BorderColor
+            BorderStyle: =gblPInput.BorderStyle
+            BorderThickness: =gblPInput.BorderThickness
+            ChevronBackground: =gblPInput.ChevronBackground
+            ChevronFill: =gblPInput.ChevronFill
+            ChevronHoverFill: =gblPInput.ChevronHoverFill
+            Color: =gblPInput.Color
+            DefaultSelectedItems: |-
+                =Table({Title: gblFPlant})
+            DisplayFields: =["Title"]
+            Fill: =gblPInput.Fill
+            FocusedBorderThickness: =gblPInput.FocusedBorderThickness
+            Font: =gblPInput.Font
+            FontWeight: =gblPInput.FontWeight
+            Height: =gblPInput.Height
+            HoverBorderColor: =gblPInput.HoverBorderColor
+            HoverColor: =gblPInput.HoverColor
+            HoverFill: =gblPInput.HoverFill
+            InputTextPlaceholder: =""
+            IsSearchable: =false
+            Items: =SortByColumns('dd_Plant-Dept'.Title,"Title")
+            PressedBorderColor: =gblPInput.PressedBorderColor
+            PressedColor: =gblPInput.PressedColor
+            PressedFill: =gblPInput.PressedFill
+            SearchFields: =["Title"]
+            SearchItems: =[]
+            SelectionTagColor: =gblPInput.SelectionTagColor
+            SelectionTagFill: =gblPInput.SelectionTagFill
+            SelectMultiple: =false
+            Size: =gblPInput.Size
+            Visible: =lclShowFilter
+            Width: =250
+            X: =TxtCD_DocTitle.X
+            Y: =LblFilter_5.Y
+            ZIndex: =23
+
+        CmbxCD_Company As combobox:
+            BorderColor: =gblPInput.BorderColor
+            BorderStyle: =gblPInput.BorderStyle
+            BorderThickness: =gblPInput.BorderThickness
+            ChevronBackground: =gblPInput.ChevronBackground
+            ChevronFill: =gblPInput.ChevronFill
+            ChevronHoverFill: =gblPInput.ChevronHoverFill
+            Color: =gblPInput.Color
+            DefaultSelectedItems: |-
+                =Table({Title: gblFCompany})
+            DisplayFields: =["Title"]
+            Fill: =gblPInput.Fill
+            FocusedBorderThickness: =gblPInput.FocusedBorderThickness
+            Font: =gblPInput.Font
+            FontWeight: =gblPInput.FontWeight
+            Height: =gblPInput.Height
+            HoverBorderColor: =gblPInput.HoverBorderColor
+            HoverColor: =gblPInput.HoverColor
+            HoverFill: =gblPInput.HoverFill
+            InputTextPlaceholder: =""
+            IsSearchable: =false
+            Items: =SortByColumns(dd_Company.Title,"Title")
+            PressedBorderColor: =gblPInput.PressedBorderColor
+            PressedColor: =gblPInput.PressedColor
+            PressedFill: =gblPInput.PressedFill
+            SearchFields: =["Title"]
+            SearchItems: =[]
+            SelectionTagColor: =gblPInput.SelectionTagColor
+            SelectionTagFill: =gblPInput.SelectionTagFill
+            SelectMultiple: =false
+            Size: =gblPInput.Size
+            Visible: =lclShowFilter
+            Width: =250
+            X: =TxtCD_DocTitle.X
+            Y: =LblFilter_6.Y
+            ZIndex: =24
+
+        CmbxCD_Manual As combobox:
+            BorderColor: =gblPInput.BorderColor
+            BorderStyle: =gblPInput.BorderStyle
+            BorderThickness: =gblPInput.BorderThickness
+            ChevronBackground: =gblPInput.ChevronBackground
+            ChevronFill: =gblPInput.ChevronFill
+            ChevronHoverFill: =gblPInput.ChevronHoverFill
+            Color: =gblPInput.Color
+            DisplayFields: =["Title"]
+            Fill: =gblPInput.Fill
+            FocusedBorderThickness: =gblPInput.FocusedBorderThickness
+            Font: =gblPInput.Font
+            FontWeight: =gblPInput.FontWeight
+            Height: =gblPInput.Height
+            HoverBorderColor: =gblPInput.HoverBorderColor
+            HoverColor: =gblPInput.HoverColor
+            HoverFill: =gblPInput.HoverFill
+            InputTextPlaceholder: =""
+            IsSearchable: =false
+            Items: =SortByColumns(dd_Manual.Title,"Title")
+            PressedBorderColor: =gblPInput.PressedBorderColor
+            PressedColor: =gblPInput.PressedColor
+            PressedFill: =gblPInput.PressedFill
+            SearchFields: =["Title"]
+            SearchItems: =[]
+            SelectionTagColor: =gblPInput.SelectionTagColor
+            SelectionTagFill: =gblPInput.SelectionTagFill
+            SelectMultiple: =false
+            Size: =gblPInput.Size
+            Visible: =lclShowFilter
+            Width: =250
+            X: =TxtCD_DocTitle.X
+            Y: =LblFilter_7.Y
+            ZIndex: =25
+
+        CmbxCD_SubArea As combobox:
+            BorderColor: =gblPInput.BorderColor
+            BorderStyle: =gblPInput.BorderStyle
+            BorderThickness: =gblPInput.BorderThickness
+            ChevronBackground: =gblPInput.ChevronBackground
+            ChevronFill: =gblPInput.ChevronFill
+            ChevronHoverFill: =gblPInput.ChevronHoverFill
+            Color: =gblPInput.Color
+            DisplayFields: =["Title"]
+            Fill: =gblPInput.Fill
+            FocusedBorderThickness: =gblPInput.FocusedBorderThickness
+            Font: =gblPInput.Font
+            FontWeight: =gblPInput.FontWeight
+            Height: =gblPInput.Height
+            HoverBorderColor: =gblPInput.HoverBorderColor
+            HoverColor: =gblPInput.HoverColor
+            HoverFill: =gblPInput.HoverFill
+            InputTextPlaceholder: =""
+            IsSearchable: =false
+            Items: =SortByColumns('dd_Sub-Area'.Title,"Title")
+            PressedBorderColor: =gblPInput.PressedBorderColor
+            PressedColor: =gblPInput.PressedColor
+            PressedFill: =gblPInput.PressedFill
+            SearchFields: =["Title"]
+            SearchItems: =[]
+            SelectionTagColor: =gblPInput.SelectionTagColor
+            SelectionTagFill: =gblPInput.SelectionTagFill
+            SelectMultiple: =false
+            Size: =gblPInput.Size
+            Visible: =lclShowFilter
+            Width: =250
+            X: =TxtCD_DocTitle.X
+            Y: =LblFilter_8.Y
+            ZIndex: =26
+
+        CmbxCD_AuthorName As combobox:
+            BorderColor: =gblPInput.BorderColor
+            BorderStyle: =gblPInput.BorderStyle
+            BorderThickness: =gblPInput.BorderThickness
+            ChevronBackground: =gblPInput.ChevronBackground
+            ChevronFill: =gblPInput.ChevronFill
+            ChevronHoverFill: =gblPInput.ChevronHoverFill
+            Color: =gblPInput.Color
+            DisplayFields: =["Result"]
+            Fill: =gblPInput.Fill
+            FocusedBorderThickness: =gblPInput.FocusedBorderThickness
+            Font: =gblPInput.Font
+            FontWeight: =gblPInput.FontWeight
+            Height: =gblPInput.Height
+            HoverBorderColor: =gblPInput.HoverBorderColor
+            HoverColor: =gblPInput.HoverColor
+            HoverFill: =gblPInput.HoverFill
+            InputTextPlaceholder: =""
+            IsSearchable: =false
+            Items: |-
+                =SortByColumns(
+                    ForAll(Distinct(
+                        Filter(
+                            DMS,
+                            is_RnD = Blank()
+                        ),
+                        AuthorName
+                    ), {Result: ThisRecord.Value}).Result,
+                    "Result"
+                )
+            PressedBorderColor: =gblPInput.PressedBorderColor
+            PressedColor: =gblPInput.PressedColor
+            PressedFill: =gblPInput.PressedFill
+            SearchFields: =["Result"]
+            SearchItems: =[]
+            SelectionTagColor: =gblPInput.SelectionTagColor
+            SelectionTagFill: =gblPInput.SelectionTagFill
+            SelectMultiple: =false
+            Size: =gblPInput.Size
+            Visible: =lclShowFilter
+            Width: =250
+            X: =LblFilter_4.X+LblFilter_4.Width
+            Y: =LblFilter_4.Y
+            ZIndex: =27
+
+        LblFilter_9 As label:
+            BorderColor: =gblPLabel.BorderColor
+            BorderStyle: =gblPLabel.BorderStyle
+            BorderThickness: =gblPLabel.BorderThickness
+            Color: =gblPLabel.Color
+            Fill: =gblPLabel.Fill
+            Font: =gblPLabel.Font  
+            FontWeight: =FontWeight.Bold
+            Height: =gblPLabel.Height 
+            Size: =gblPLabel.Size
+            Text: ="Document Type"
+            Visible: =lclShowFilter
+            Width: =180
+            X: =LblFilter_8.X
+            Y: =LblFilter_8.Y+LblFilter_8.Height+5
+            ZIndex: =28
+
+        CmbxCD_DocumentType As combobox:
+            BorderColor: =gblPInput.BorderColor
+            BorderStyle: =gblPInput.BorderStyle
+            BorderThickness: =gblPInput.BorderThickness
+            ChevronBackground: =gblPInput.ChevronBackground
+            ChevronFill: =gblPInput.ChevronFill
+            ChevronHoverFill: =gblPInput.ChevronHoverFill
+            Color: =gblPInput.Color
+            DisplayFields: =["Desc"]
+            Fill: =gblPInput.Fill
+            FocusedBorderThickness: =gblPInput.FocusedBorderThickness
+            Font: =gblPInput.Font
+            FontWeight: =gblPInput.FontWeight
+            Height: =gblPInput.Height
+            HoverBorderColor: =gblPInput.HoverBorderColor
+            HoverColor: =gblPInput.HoverColor
+            HoverFill: =gblPInput.HoverFill
+            InputTextPlaceholder: =""
+            IsSearchable: =false
+            Items: =SortByColumns(Filter(dd_DocumentType, is_RnD = 0).Desc,"Desc")
+            PressedBorderColor: =gblPInput.PressedBorderColor
+            PressedColor: =gblPInput.PressedColor
+            PressedFill: =gblPInput.PressedFill
+            SearchFields: =["Desc"]
+            SearchItems: =[]
+            SelectionTagColor: =gblPInput.SelectionTagColor
+            SelectionTagFill: =gblPInput.SelectionTagFill
+            SelectMultiple: =false
+            Size: =gblPInput.Size
+            Visible: =lclShowFilter
+            Width: =250
+            X: =TxtCD_DocTitle.X
+            Y: =LblFilter_9.Y
+            ZIndex: =29
+
+        BtnSave_1 As button:
+            BorderColor: =gblPButtonApprove.BorderColor
+            BorderStyle: =gblPButtonApprove.BorderStyle
+            BorderThickness: =gblPButtonApprove.BorderThickness
+            Color: =gblPButtonApprove.Color
+            Fill: =gblPButtonApprove.Fill
+            FocusedBorderColor: =gblPButtonApprove.FocusedBorderColor
+            FocusedBorderThickness: =gblPButtonApprove.FocusedBorderThickness
+            Font: =gblPButtonApprove.Font
+            FontWeight: =gblPButtonApprove.FontWeight
+            HoverBorderColor: =gblPButtonApprove.HoverBorderColor
+            HoverColor: =gblPButtonApprove.HoverColor
+            HoverFill: =gblPButtonApprove.HoverFill
+            OnSelect: |-
+                =UpdateContext({lclShowFilter:false})
+            PressedBorderColor: =gblPButtonApprove.PressedBorderColor
+            PressedColor: =gblPButtonApprove.PressedColor
+            PressedFill: =gblPButtonApprove.PressedFill
+            RadiusBottomLeft: =gblPButtonApprove.RadiusBottomLeft
+            RadiusBottomRight: =gblPButtonApprove.RadiusBottomRight
+            RadiusTopLeft: =gblPButtonApprove.RadiusTopLeft
+            RadiusTopRight: =gblPButtonApprove.RadiusTopRight
+            Size: =gblPButtonApprove.Size
+            TabIndex: =13
+            Text: ="Ok"
+            Visible: =lclShowFilter
+            X: =CmpntBGShadow_1.X + (CmpntBGShadow_1.Width * 0.5 - Self.Width*0.5)
+            Y: =LblFilter_9.Y+LblFilter_9.Height+10
+            ZIndex: =30
+
+    BtnVersion As button:
+        Fill: =RGBA(56, 96, 178, 0)
+        FocusedBorderThickness: =1
+        Height: =31
+        HoverFill: =Self.Fill
+        PressedFill: =Self.Fill
+        Text: =""
+        Tooltip: ="v192"
+        Width: =83
+        ZIndex: =37
+
+    GrpConfirmation As group:
+        Height: =5
+        Width: =5
+        X: =60
+        Y: =60
+        ZIndex: =39
+
+        Rectangle3_2 As rectangle:
+            BorderColor: =RGBA(0, 0, 0, 1)
+            BorderThickness: =1
+            Fill: =RGBA(1, 1, 1, 0.1)
+            Height: =Parent.Height
+            Visible: = lclDeleteCon || lclArchiveCon
+            Width: =Parent.Width
+            X: =(Parent.Width * 0.5) - ( Self.Width*0.5 )
+            Y: =(Parent.Height * 0.5) - ( Self.Height *0.5)
+            ZIndex: =32
+
+        Rectangle3_1 As rectangle:
+            BorderColor: =RGBA(255, 255, 255, 1)
+            BorderThickness: =0.5
+            Fill: =RGBA(250, 250, 250, 1)
+            Height: =160
+            Visible: = lclDeleteCon || lclArchiveCon
+            Width: =459
+            X: =(Parent.Width * 0.5) - ( Self.Width*0.5 )
+            Y: =(Parent.Height * 0.5) - ( Self.Height *0.5)
+            ZIndex: =33
+
+        BtnOk_5 As button:
+            BorderColor: =gblPButtonApprove.BorderColor
+            BorderStyle: =gblPButtonApprove.BorderStyle
+            BorderThickness: =gblPButtonApprove.BorderThickness
+            Color: =gblPButtonApprove.Color
+            Fill: =gblPButtonApprove.Fill
+            FocusedBorderColor: =gblPButtonApprove.FocusedBorderColor
+            FocusedBorderThickness: =gblPButtonApprove.FocusedBorderThickness
+            Font: =gblPButtonApprove.Font
+            FontWeight: =gblPButtonApprove.FontWeight
+            Height: =25
+            HoverBorderColor: =gblPButtonApprove.HoverBorderColor
+            HoverColor: =gblPButtonApprove.HoverColor
+            HoverFill: =gblPButtonApprove.HoverFill
+            OnSelect: |-
+                =If(
+                    lclDeleteCon,
+                    RemoveIf(
+                        Document,
+                        DMS_ID = GalDMS.Selected.ID
+                    );
+                    Remove(
+                        DMS,
+                        GalDMS.Selected
+                    );
+                    Notify(
+                        GalDMS.Selected.DocumentTitle & " has been Remove.",
+                        NotificationType.Information,
+                        3000
+                    ),
+                    lclArchiveCon,
+                    Patch(
+                        DMS,
+                        GalDMS.Selected,
+                        {DocumentStatus: "Archive"}
+                    );
+                    Office365Outlook.SendEmailV2(
+                        Concat(
+                            Filter(
+                                Users,
+                                DMSRole = "Uploader",
+                                Plant = GalDMS.Selected.PlantAssign || Plant in GalDMS.Selected.SharedToPlant
+                            ),
+                            Email,
+                            ";"
+                        ),
+                        "DMS DOCUMENT ARCHIVED",
+                        "A document " & GalDMS.Selected.DocumentTitle & " has been obsolete thus tagged as archived by " & Proper(gblUserInfo.Title) & ". Please visit <a href='" & gblAppURL & "'>  DMS Portal</a>. Thank you.",
+                        {
+                            Cc: gblUserInfo.Email,
+                            Importance: "High"
+                        }
+                    );
+                    Notify(
+                        GalDMS.Selected.DocumentTitle & " has been Archive.",
+                        NotificationType.Information,
+                        3000
+                    ),
+                    false
+                );
+                Select(BtnCancelConDoc);
+                Select(Rectangle1)
+            PressedBorderColor: =gblPButtonApprove.PressedBorderColor
+            PressedColor: =gblPButtonApprove.PressedColor
+            PressedFill: =gblPButtonApprove.PressedFill
+            RadiusBottomLeft: =gblPButtonApprove.RadiusBottomLeft
+            RadiusBottomRight: =5
+            RadiusTopLeft: =5
+            RadiusTopRight: =gblPButtonApprove.RadiusTopRight
+            Size: =13
+            TabIndex: =13
+            Text: ="OK"
+            Visible: = lclDeleteCon || lclArchiveCon
+            Width: =120
+            X: =LblConfimation.X+50
+            Y: =LblConfimation.Y+LblConfimation.Height + 10
+            ZIndex: =34
+
+        BtnCancelConDoc As button:
+            BorderColor: =gblPButtonReject.BorderColor
+            BorderStyle: =gblPButtonReject.BorderStyle
+            BorderThickness: =gblPButtonReject.BorderThickness
+            Color: =gblPButtonReject.Color
+            Fill: =gblPButtonReject.Fill
+            FocusedBorderColor: =gblPButtonReject.FocusedBorderColor
+            FocusedBorderThickness: =gblPButtonReject.FocusedBorderThickness
+            Font: =gblPButtonReject.Font
+            FontWeight: =gblPButtonReject.FontWeight
+            Height: =25
+            HoverBorderColor: =gblPButtonReject.HoverBorderColor
+            HoverColor: =gblPButtonReject.HoverColor
+            HoverFill: =gblPButtonReject.HoverFill
+            OnSelect: |-
+                =UpdateContext({lclDeleteCon:false,lclArchiveCon:false})
+            PressedBorderColor: =gblPButtonReject.PressedBorderColor
+            PressedColor: =gblPButtonReject.PressedColor
+            PressedFill: =gblPButtonReject.PressedFill
+            RadiusBottomLeft: =gblPButtonReject.RadiusBottomLeft
+            RadiusBottomRight: =5
+            RadiusTopLeft: =5
+            RadiusTopRight: =gblPButtonReject.RadiusBottomRight
+            Size: =13
+            TabIndex: =14
+            Text: ="Cancel"
+            Visible: = lclDeleteCon || lclArchiveCon
+            Width: =120
+            X: =BtnOk_5.X+ BtnOk_5.Width + 40
+            Y: =BtnOk_5.Y
+            ZIndex: =35
+
+        LblConfimation As label:
+            Align: =Align.Center
+            Height: =100
+            Text: |-
+                ="Are you sure you want to " & If(
+                    lclDeleteCon,
+                    "Delete ",
+                    "Archive "
+                ) & GalDMS.Selected.DocumentTitle &" ?"
+            Visible: = lclDeleteCon || lclArchiveCon
+            Width: =363
+            X: =Rectangle3_1.X + (Rectangle3_1.Width*0.5)-(Self.Width*0.5)
+            Y: =Rectangle3_1.Y + 10
+            ZIndex: =36
+

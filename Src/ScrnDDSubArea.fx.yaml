@@ -1,0 +1,370 @@
+ScrnDDSubArea As screen:
+    OnVisible: =Select(BtnCancel_5);SetFocus(DataCardValue18)
+
+    CmpntHeader_8 As CmpntHeader:
+        BackNavigation: =ScrnListRnd
+        HeaderText: =""
+        Width: =Parent.Width
+
+    FrmDDSubArea As form:
+        AcceptsFocus: =false
+        DataSource: ='dd_Sub-Area'
+        DefaultMode: =FormMode.New
+        Height: =99
+        Item: =lclDDsubArea
+        NumberOfColumns: =12
+        OnSuccess: |-
+            =If(
+                IsBlank(lclDDsubArea),
+                Notify(
+                    "New Manual Added Successfully",
+                    NotificationType.Success,
+                    3000
+                ),
+                Notify(
+                    "Manual Updated Successfully",
+                    NotificationType.Success,
+                    3000
+                )
+            );
+            NewForm(FrmDDSubArea);
+            UpdateContext({lclDDsubArea: Blank()})
+        Width: =Parent.Width
+        X: |
+            =0
+        Y: =CmpntHeader_8.Y+CmpntHeader_8.Height
+        ZIndex: =4
+
+        DataCard10 As typedDataCard.blankCard:
+            BorderStyle: =BorderStyle.Solid
+            DisplayMode: =DisplayMode.Edit
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =97
+            Width: =339
+            X: =0
+            Y: =0
+            ZIndex: =1
+
+        DataCard11 As typedDataCard.blankCard:
+            BorderStyle: =BorderStyle.Solid
+            DisplayMode: =DisplayMode.Edit
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =97
+            Width: =339
+            X: =6
+            Y: =0
+            ZIndex: =1
+
+            BtnOk_4 As button:
+                BorderColor: =gblPButtonApprove.BorderColor
+                BorderStyle: =gblPButtonApprove.BorderStyle
+                BorderThickness: =gblPButtonApprove.BorderThickness
+                Color: =gblPButtonApprove.Color
+                Fill: =gblPButtonApprove.Fill
+                FocusedBorderColor: =gblPButtonApprove.FocusedBorderColor
+                FocusedBorderThickness: =gblPButtonApprove.FocusedBorderThickness
+                Font: =gblPButtonApprove.Font
+                FontWeight: =gblPButtonApprove.FontWeight
+                Height: =30
+                HoverBorderColor: =gblPButtonApprove.HoverBorderColor
+                HoverColor: =gblPButtonApprove.HoverColor
+                HoverFill: =gblPButtonApprove.HoverFill
+                OnSelect: =SubmitForm(FrmDDSubArea)
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                PressedBorderColor: =gblPButtonApprove.PressedBorderColor
+                PressedColor: =gblPButtonApprove.PressedColor
+                PressedFill: =gblPButtonApprove.PressedFill
+                Size: =gblPButtonApprove.Size
+                TabIndex: =13
+                Text: =If(IsBlank(lclDDsubArea), "Add","Update")
+                Width: =130
+                X: =(Parent.Width*0.3  )-(Self.Width*0.5)
+                Y: =(Parent.Height*0.5  )-(Self.Height*0.5)
+                ZIndex: =1
+
+            BtnCancel_5 As button:
+                BorderColor: =gblPButtonReject.BorderColor
+                BorderStyle: =gblPButtonReject.BorderStyle
+                BorderThickness: =gblPButtonReject.BorderThickness
+                Color: =gblPButtonReject.Color
+                Fill: =gblPButtonReject.Fill
+                FocusedBorderColor: =gblPButtonReject.FocusedBorderColor
+                FocusedBorderThickness: =gblPButtonReject.FocusedBorderThickness
+                Font: =gblPButtonReject.Font
+                FontWeight: =gblPButtonReject.FontWeight
+                Height: =30
+                HoverBorderColor: =gblPButtonReject.HoverBorderColor
+                HoverColor: =gblPButtonReject.HoverColor
+                HoverFill: =gblPButtonReject.HoverFill
+                OnSelect: |-
+                    =ResetForm(FrmDDSubArea);
+                    NewForm(FrmDDSubArea);
+                    UpdateContext({lclDDsubArea: Blank()})
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                PressedBorderColor: =gblPButtonReject.PressedBorderColor
+                PressedColor: =gblPButtonReject.PressedColor
+                PressedFill: =gblPButtonReject.PressedFill
+                Size: =gblPButtonReject.Size
+                TabIndex: =14
+                Text: ="Cancel"
+                Width: =130
+                X: =BtnOk_4.X+ BtnOk_4.Width + 10
+                Y: =BtnOk_4.Y
+                ZIndex: =2
+
+        Title_DataCard4 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="Title"
+            Default: =ThisItem.Title
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: ="Sub Area"
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =85
+            MaxLength: =DataSourceInfo([@'dd_Sub-Area'], DataSourceInfo.MaxLength, "Title")
+            Required: =true
+            Update: =DataCardValue18.Text
+            Width: =339
+            X: =3
+            Y: =0
+            ZIndex: =5
+
+            DataCardKey3_14 As label:
+                AutoHeight: =true
+                BorderColor: =gblPLabel.BorderColor
+                BorderStyle: =gblPLabel.BorderStyle
+                BorderThickness: =gblPLabel.BorderThickness
+                Color: =gblPLabel.Color
+                Fill: =gblPLabel.Fill
+                Font: =gblPLabel.Font
+                FontWeight: =gblPLabel.FontWeight
+                Height: =gblPLabel.Height
+                Size: =gblPLabel.Size
+                Text: =Parent.DisplayName
+                Width: =Parent.Width - 60
+                Wrap: =false
+                X: =gblPLabel.X
+                Y: =gblPLabel.Y
+                ZIndex: =1
+
+            DataCardValue18 As text:
+                BorderColor: =If(IsBlank(Parent.Error), gblPInput.BorderColor, Color.Red)
+                BorderStyle: =gblPInput.BorderStyle
+                BorderThickness: =gblPInput.BorderThickness
+                Color: =gblPInput.Color
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                Fill: =gblPInput.Fill
+                FocusedBorderThickness: =gblPInput.FocusedBorderThickness
+                Font: =gblPInput.Font
+                FontWeight: =gblPInput.FontWeight
+                Height: =gblPInput.Height
+                HoverBorderColor: =gblPInput.HoverBorderColor
+                HoverColor: =gblPInput.HoverColor
+                HoverFill: =gblPInput.HoverFill
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                PressedBorderColor: =gblPInput.PressedBorderColor
+                PressedColor: =gblPInput.PressedColor
+                PressedFill: =gblPInput.PressedFill
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Size: =gblPInput.Size
+                TabIndex: =5
+                Tooltip: =Parent.DisplayName
+                Width: =Parent.Width - 60
+                X: =DataCardKey3_14.X
+                Y: =DataCardKey3_14.Y + DataCardKey3_14.Height + 5
+                ZIndex: =2
+
+            StarVisible2_21 As label:
+                Align: =Align.Center
+                Color: =gblPStar.Color
+                Font: =gblPStar.Font
+                FontWeight: =gblPStar.FontWeight
+                Height: =DataCardKey3_14.Height
+                Size: =gblPStar.Size
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: |-
+                    =DataCardKey3_14
+                    .Y
+                ZIndex: =3
+
+            ErrorMessage2_21 As label:
+                AutoHeight: =true
+                BorderColor: =gblPError.BorderColor
+                BorderStyle: =gblPError.BorderStyle
+                BorderThickness: =gblPError.BorderThickness
+                Color: =gblPError.Color
+                Fill: =gblPError.Fill
+                Font: =gblPError.Font
+                FontWeight: =gblPError.FontWeight
+                Height: =gblPError.Height
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =gblPError.Size
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =gblPError.X
+                Y: =DataCardValue18.Y + DataCardValue18.Height
+                ZIndex: =4
+
+    "GalDDSubArea As gallery.'BrowseLayout_Vertical_TwoTextOneImageVariant_ver4.0'":
+        BorderColor: =RGBA(1, 1, 1, 1)
+        BorderThickness: =2
+        Height: =Parent.Height - (DataCardKey3_18.Y+DataCardKey3_18.Height) -10
+        Items: ='dd_Sub-Area'
+        Layout: =Layout.Vertical
+        OnSelect: =
+        TemplatePadding: =0
+        TemplateSize: =30
+        Transition: =Transition.Pop
+        Width: =Parent.Width/2
+        X: =(Parent.Width * 0.5) - (Self.Width * 0.5)
+        Y: =DataCardKey3_18.Y+DataCardKey3_18.Height
+        ZIndex: =9
+
+        Separator1_3 As rectangle:
+            Height: =1
+            OnSelect: =Select(Parent)
+            Width: =Parent.TemplateWidth
+            Y: =Parent.TemplateHeight - 1
+            ZIndex: =5
+
+        DataCardKey3_19 As label:
+            BorderColor: =gblPLabel.BorderColor
+            BorderStyle: =gblPLabel.BorderStyle
+            BorderThickness: =gblPLabel.BorderThickness
+            Color: =gblPLabel.Color
+            Fill: =gblPLabel.Fill
+            Font: =gblPLabel.Font
+            Height: =22
+            OnSelect: |-
+                =EditForm(FrmDDSubArea); UpdateContext({lclDDsubArea: GalDDSubArea.Selected})
+            Size: =gblPLabel.Size
+            Text: =ThisItem.Title
+            Width: =568
+            Wrap: =false
+            X: =40
+            Y: =gblPLabel.Y
+            ZIndex: =6
+
+        IconDelete_3 As icon.CancelBadge:
+            Color: =RGBA(151, 0, 0, 1)
+            Height: =25
+            Icon: =Icon.CancelBadge
+            OnSelect: =Remove('dd_Sub-Area',GalDDSubArea.Selected)
+            Tooltip: ="Delete "
+            Width: =30
+            X: =Parent.Width - Self.Width - 30
+            Y: =(Parent.TemplateHeight * 0.5 ) - (Self.Height * 0.5)
+            ZIndex: =9
+
+    GrpNav_5 As group:
+        Height: =5
+        Width: =5
+        X: =40
+        Y: =40
+        ZIndex: =9
+
+        Button1_5 As button:
+            BorderThickness: =0
+            Fill: =RGBA(1,1,1,0)
+            FocusedBorderThickness: =1
+            Height: =31
+            HoverFill: =RGBA(1,1,1,1)
+            OnSelect: =Navigate(ScrnSetPwrd,ScreenTransition.Fade)
+            PressedColor: =Self.HoverColor
+            PressedFill: =Self.HoverFill
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =12
+            Text: ="Plant Password"
+            Width: =206
+            X: =204
+            ZIndex: =5
+
+        Button2_11 As button:
+            BorderThickness: =0
+            Fill: =RGBA(1,1,1,0)
+            FocusedBorderThickness: =1
+            Height: =31
+            HoverFill: =RGBA(1,1,1,1)
+            OnSelect: =Navigate(ScrnDDDocumentType,ScreenTransition.Fade)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =12
+            Text: ="Document Type"
+            X: =410
+            ZIndex: =6
+
+        Button2_12 As button:
+            BorderThickness: =0
+            Fill: = RGBA(1,1,1,0)
+            FocusedBorderThickness: =1
+            Height: =31
+            HoverFill: =RGBA(1,1,1,1)
+            OnSelect: =Navigate(ScrnDDManual,ScreenTransition.Fade);
+            PressedColor: =Self.HoverColor
+            PressedFill: =Self.HoverFill
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =12
+            Text: ="Manual"
+            X: =Button2_11.X+Button2_11.Width
+            ZIndex: =7
+
+        Button2_13 As button:
+            BorderThickness: =0
+            Fill: =RGBA(1,1,1,1)
+            FocusedBorderThickness: =1
+            Height: =31
+            HoverFill: =RGBA(1,1,1,1)
+            PressedColor: =Self.HoverColor
+            PressedFill: =Self.HoverFill
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =12
+            Text: ="Sub Area"
+            X: =730
+            ZIndex: =8
+
+    DataCardKey3_18 As label:
+        BorderColor: =RGBA(0,0,0,1)
+        BorderThickness: =2
+        Color: =gblPLabel.Color
+        Fill: =gblPLabel.Fill
+        Font: =gblPLabel.Font
+        FontWeight: =gblPLabel.FontWeight
+        Height: =25
+        Size: =gblPLabel.Size
+        Text: ="       Sub Area "
+        Width: =Parent.Width/2
+        Wrap: =false
+        X: =(Parent.Width * 0.5) - (Self.Width * 0.5)
+        Y: =FrmDDSubArea.Y+FrmDDSubArea.Height
+        ZIndex: =10
+
