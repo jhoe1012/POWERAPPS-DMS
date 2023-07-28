@@ -592,14 +592,13 @@ ScrnForm As screen:
                             )
                         }
                     );
-                    
                     If(
                         lclIsRnD && FrmDMS.LastSubmit.DocumentStatus = "Active",
                         Office365Outlook.SendEmailV2(
                             Concat(
                                 Filter(
                                     Users,
-                                    DMSRole = "Uploader" || DMSRole = "Viewer",
+                                    DMSRole = "Uploader" || DMSRole = "Viewer" || DMSRole="Qci-Viewer",
                                     Plant in FrmDMS.LastSubmit.SharedToPlant
                                 ),
                                 Email,
@@ -611,6 +610,14 @@ ScrnForm As screen:
                                 Cc: Concatenate(
                                     gblUserInfo.Email,
                                     ";",
+                                    Concat(
+                                        Filter(
+                                            Users,
+                                            Position = "QA Manager"   //ADD GPARAISO (07/19/2023)
+                                        ),
+                                        Email,
+                                        ";"
+                                    ),
                                     If(
                                         CountRows(
                                             Filter(
@@ -621,8 +628,8 @@ ScrnForm As screen:
                                         Concat(
                                             Filter(
                                                 Users,
-                                                DMSRole = "Reg-Viewer", 
-                                                Plant ="SQA" // FOR SQA MANAGERS NOTIF
+                                                DMSRole = "Reg-Viewer",
+                                                Plant = "SQA"// FOR SQA MANAGERS NOTIF
                                             ),
                                             Email,
                                             ";"
@@ -2837,27 +2844,27 @@ ScrnForm As screen:
                         {
                             lclDocDetails: Concatenate(
                                 DataCardValue8_1.Selected.Title & If(
-                                    !IsBlank(DataCardValue8_1.Selected.Title) || IsEmpty(DataCardValue8_1.Selected.Title),
+                                    !IsBlank(DataCardValue8_1.Selected.Title) || false,
                                     "-"
                                 ),
                                 DataCardValue8_2.Selected.Title & If(
-                                    !IsBlank(DataCardValue8_2.Selected.Title) || IsEmpty(DataCardValue8_2.Selected.Title),
+                                    !IsBlank(DataCardValue8_2.Selected.Title) || false,
                                     "-"
                                 ),
                                 DataCardValue8_3.Selected.Value & If(
-                                    !IsBlank(DataCardValue8_3.Selected.Value) || IsEmpty(DataCardValue8_3.Selected.Value),
+                                    !IsBlank(DataCardValue8_3.Selected.Value) || false,
                                     "-"
                                 ),
                                 DataCardValue8_4.Selected.Title & If(
-                                    !IsBlank(DataCardValue8_4.Selected.Title) || IsEmpty(DataCardValue8_4.Selected.Title),
+                                    !IsBlank(DataCardValue8_4.Selected.Title) || false,
                                     "-"
                                 ),
                                 DataCardValue8_5.Selected.Title & If(
-                                    !IsBlank(DataCardValue8_5.Selected.Title) || IsEmpty(DataCardValue8_5.Selected.Title),
+                                    !IsBlank(DataCardValue8_5.Selected.Title) || false,
                                     "-"
                                 ),
                                 DataCardValue8.Selected.Title & If(
-                                    !IsBlank(DataCardValue8.Selected.Title) || IsEmpty(DataCardValue8.Selected.Title),
+                                    !IsBlank(DataCardValue8.Selected.Title) || false,
                                     "-"
                                 )
                             )

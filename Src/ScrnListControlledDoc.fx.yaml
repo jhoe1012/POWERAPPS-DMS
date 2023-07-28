@@ -28,14 +28,14 @@ ScrnListControlledDoc As screen:
                         DocumentControlNumber,
                         TxtCD_DocCntrlNo
                     ),
-                    IsBlank(DpCD_EffectivityDate.SelectedDate) || IsEmpty(DpCD_EffectivityDate.SelectedDate) || EffectivityDate = DpCD_EffectivityDate.SelectedDate,
-                    IsBlank(CmbxCD_DocumentStatus.Selected.Value) || IsEmpty(CmbxCD_DocumentStatus.Selected.Value) || DocumentStatus = CmbxCD_DocumentStatus.Selected.Value,
-                    IsBlank(CmbxCD_AuthorName.Selected.Result) || IsEmpty(CmbxCD_AuthorName.Selected.Result) || AuthorName = CmbxCD_AuthorName.Selected.Result,
-                    IsBlank(CmbxCD_Plant.Selected.Title) || IsEmpty(CmbxCD_Plant.Selected.Title) || Plant = CmbxCD_Plant.Selected.Title,
-                    IsBlank(CmbxCD_Company.Selected.Title) || IsEmpty(CmbxCD_Company.Selected.Title) || Company = CmbxCD_Company.Selected.Title,
-                    IsBlank(CmbxCD_Manual.Selected.Title) || IsEmpty(CmbxCD_Manual.Selected.Title) || Manual = CmbxCD_Manual.Selected.Title,
-                    IsBlank(CmbxCD_SubArea.Selected.Title) || IsEmpty(CmbxCD_SubArea.Selected.Title) || 'Sub-Area' = CmbxCD_SubArea.Selected.Title,
-                    IsBlank(CmbxCD_DocumentType.Selected.Desc) || IsEmpty(CmbxCD_DocumentType.Selected.Desc) || DocumentType = CmbxCD_DocumentType.Selected.Desc
+                    IsBlank(DpCD_EffectivityDate.SelectedDate) || false || EffectivityDate = DpCD_EffectivityDate.SelectedDate,
+                    IsBlank(CmbxCD_DocumentStatus.Selected.Value) || false || DocumentStatus = CmbxCD_DocumentStatus.Selected.Value,
+                    IsBlank(CmbxCD_AuthorName.Selected.Result) || false || AuthorName = CmbxCD_AuthorName.Selected.Result,
+                    IsBlank(CmbxCD_Plant.Selected.Title) || false || Plant = CmbxCD_Plant.Selected.Title,
+                    IsBlank(CmbxCD_Company.Selected.Title) || false || Company = CmbxCD_Company.Selected.Title,
+                    IsBlank(CmbxCD_Manual.Selected.Title) || false || Manual = CmbxCD_Manual.Selected.Title,
+                    IsBlank(CmbxCD_SubArea.Selected.Title) || false || 'Sub-Area' = CmbxCD_SubArea.Selected.Title,
+                    IsBlank(CmbxCD_DocumentType.Selected.Desc) || false || DocumentType = CmbxCD_DocumentType.Selected.Desc
                 ),
                 "DocumentStatus",
                 SortOrder.Descending,
@@ -466,7 +466,9 @@ ScrnListControlledDoc As screen:
                     RadiusTopRight: =5
                     Size: =10
                     Text: ="Edit"
-                    Visible: =GalDMS.Selected.'Created By'.Email = gblUserEmail || gblUserInfo.DMSRole = "Approver"
+                    Visible: |-
+                        =//GalDMS.Selected.'Created By'.Email = gblUserEmail || gblUserInfo.DMSRole = "Approver"
+                        (gblUserInfo.DMSRole = "Uploader" &&  GalDMS.Selected.PlantAssign = gblUserInfo.Plant ) || gblUserInfo.DMSRole = "Approver"
                     Width: =92
                     X: =(HtmlRevisionHistory.X+HtmlRevisionHistory.Width) - (Self.Width + 30)
                     Y: =HtmlRevisionHistory.Y + 16

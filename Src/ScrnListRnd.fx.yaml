@@ -98,10 +98,10 @@ ScrnListRnd As screen:
                                 DocumentControlNumber,
                                 TxtCD_DocCntrlNo_1
                             ),
-                            IsBlank(DpCD_EffectivityDate_1.SelectedDate) || IsEmpty(DpCD_EffectivityDate_1.SelectedDate) || EffectivityDate = DpCD_EffectivityDate_1.SelectedDate,
-                            IsBlank(CmbxCD_DocumentStatus_1.Selected.Value) || IsEmpty(CmbxCD_DocumentStatus_1.Selected.Value) || DocumentStatus = CmbxCD_DocumentStatus_1.Selected.Value,
-                            IsBlank(CmbxCD_AuthorName_1.Selected.Result) || IsEmpty(CmbxCD_AuthorName_1.Selected.Result) || AuthorName = CmbxCD_AuthorName_1.Selected.Result,
-                            IsBlank(CmbxCD_DocumentType_1.Selected.Desc) || IsEmpty(CmbxCD_DocumentType_1.Selected.Desc) || DocumentType = CmbxCD_DocumentType_1.Selected.Desc
+                            IsBlank(DpCD_EffectivityDate_1.SelectedDate) || false || EffectivityDate = DpCD_EffectivityDate_1.SelectedDate,
+                            IsBlank(CmbxCD_DocumentStatus_1.Selected.Value) || false || DocumentStatus = CmbxCD_DocumentStatus_1.Selected.Value,
+                            IsBlank(CmbxCD_AuthorName_1.Selected.Result) || false || AuthorName = CmbxCD_AuthorName_1.Selected.Result,
+                            IsBlank(CmbxCD_DocumentType_1.Selected.Desc) || false || DocumentType = CmbxCD_DocumentType_1.Selected.Desc
                         ),
                         "DocumentTitle"
                     )

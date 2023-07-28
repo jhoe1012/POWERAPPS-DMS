@@ -3,7 +3,7 @@
     "connectionRef": {
       "apiTier": "Standard",
       "displayName": "SharePoint",
-      "iconUri": "https://connectoricons-prod.azureedge.net/releases/v1.0.1627/1.0.1627.3238/sharepointonline/icon.png",
+      "iconUri": "https://connectoricons-prod.azureedge.net/u/shgogna/globalperconnector-train1/1.0.1639.3310/sharepointonline/icon.png",
       "id": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
       "parameterHints": {},
       "parameterHintsV2": {}
@@ -78,7 +78,7 @@
     "connectionRef": {
       "apiTier": "Standard",
       "displayName": "Logic flows",
-      "iconUri": "https://connectoricons-prod.azureedge.net/releases/v1.0.1615/1.0.1615.3163/logicflows/icon.png",
+      "iconUri": "https://connectoricons-prod.azureedge.net/releases/v1.0.1645/1.0.1645.3345/logicflows/icon.png",
       "id": "/providers/microsoft.powerapps/apis/shared_logicflows",
       "parameterHints": {
         "0a05152f-86c2-4fbd-bbe7-a8a1332a16a3": {
@@ -113,7 +113,7 @@
     "connectionRef": {
       "apiTier": "Standard",
       "displayName": "Office 365 Outlook",
-      "iconUri": "https://connectoricons-prod.azureedge.net/releases/v1.0.1626/1.0.1626.3238/office365/icon.png",
+      "iconUri": "https://connectoricons-prod.azureedge.net/releases/v1.0.1647/1.0.1647.3361/office365/icon.png",
       "id": "/providers/microsoft.powerapps/apis/shared_office365",
       "parameterHints": {},
       "parameterHintsV2": {}

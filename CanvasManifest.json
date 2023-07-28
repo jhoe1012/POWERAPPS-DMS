@@ -1,7 +1,7 @@
 {
   "FormatVersion": "0.24",
   "Header": {
-    "DocVersion": "1.331",
+    "DocVersion": "1.334",
     "MinVersionToLoad": "1.331",
     "MSAppStructureVersion": "2.0"
   },
@@ -13,7 +13,6 @@
       "allowmultiplescreensincanvaspages": false,
       "appinsightserrortracing": false,
       "appinstrumentationcorrelationtracing": false,
-      "asyncnodedelegation": false,
       "autocreateenvironmentvariables": false,
       "backfromhostaction": false,
       "behaviorpropertyui": false,
@@ -42,12 +41,12 @@
       "enableonstart": true,
       "enableonstartnavigate": false,
       "enablepcfmoderndatasets": true,
-      "enablepowerautomatepane": false,
       "enablerowscopeonetonexpand": false,
       "enablerpawarecomponentdependency": true,
       "enablerulespanel": false,
       "enableruntimepolicies": false,
       "enablesaveloadcleardataonweb": false,
+      "enableupdateifdelegation": false,
       "enhanceddelegation": true,
       "enhancedgalleryinitialization": true,
       "errorhandling": true,
@@ -63,7 +62,7 @@
       "herocontrols": false,
       "improvedmediacapture": false,
       "improvedtabstopbehavior": true,
-      "impurenodedelegation": false,
+      "isemptyrequirestableargument": true,
       "keeprecentscreensloaded": false,
       "longlivingcache": false,
       "mobilenativerendering": false,
@@ -109,13 +108,14 @@
     "DocumentType": "App",
     "EnableInstrumentation": false,
     "FileID": "422904aa-5f53-4d09-96d2-1e1194353a23",
-    "Id": "0f6457e3-c6d2-4b68-8873-ac74d6017d1c",
+    "Id": "5bbd73d6-3f67-426d-902b-bdbf179d8878",
     "InstrumentationKey": "",
     "LocalDatabaseReferences": "{}",
     "ManualOfflineProfileId": "",
     "Name": "Document+Management+System.msapp",
     "OriginatingVersion": "1.321",
-    "ParserErrorCount": 0
+    "ParserErrorCount": 0,
+    "ShowStatusBar": false
   },
   "PublishInfo": {
     "AppName": "Document Management System",
